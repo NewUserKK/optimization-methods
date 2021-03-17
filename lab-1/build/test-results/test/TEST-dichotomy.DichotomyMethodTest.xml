@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="dichotomy.DichotomyMethodTest" tests="2" skipped="0" failures="0" errors="0" timestamp="2021-03-17T17:53:12" hostname="i102611445" time="0.026">
+<testsuite name="dichotomy.DichotomyMethodTest" tests="2" skipped="0" failures="0" errors="0" timestamp="2021-03-17T20:26:15" hostname="i102611445" time="0.028">
   <properties/>
-  <testcase name="should correctly find one local minimum" classname="dichotomy.DichotomyMethodTest" time="0.019"/>
-  <testcase name="should correctly find minimum when there is two extrema" classname="dichotomy.DichotomyMethodTest" time="0.002"/>
+  <testcase name="should correctly find one local minimum" classname="dichotomy.DichotomyMethodTest" time="0.02"/>
+  <testcase name="should correctly find any of local minimums" classname="dichotomy.DichotomyMethodTest" time="0.004"/>
   <system-out><![CDATA[]]></system-out>
   <system-err><![CDATA[]]></system-err>
 </testsuite>

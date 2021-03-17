@@ -1,10 +1,8 @@
 package dichotomy
 
-import common.MinimizationMethod
-import common.MinimizationResult
-import common.OneDimFunction
-import common.shouldBeAround
+import common.*
 import io.kotest.core.spec.style.FreeSpec
+import io.kotest.matchers.shouldBe
 import kotlin.math.pow
 
 abstract class BaseTest(private val method: MinimizationMethod): FreeSpec({
@@ -19,17 +17,25 @@ abstract class BaseTest(private val method: MinimizationMethod): FreeSpec({
             function = testFunction
         )
 
-        actual shouldBeAround expected
+        expected shouldBeAround actual
     }
 
-    "should correctly find minimum when there is two extrema" {
-        val expected = MinimizationResult(0.432, -0.587, 0)
+    "should correctly find any of local minimums" {
+        val expectedVariants = listOf(
+            MinimizationResult(0.432, -0.587, 0),
+            MinimizationResult(-2.141, -4.148, 0)
+        )
+
         val actual = method.findMinimum(
-            rangeStart = -1.0,
-            rangeEnd = 1.0,
+            rangeStart = -20.0,
+            rangeEnd = 20.0,
             function = testFunction
         )
 
-        actual shouldBeAround expected
+        val matchers = expectedVariants.map { result ->
+            { actual shouldBeAround result }
+        }
+
+        matchAny(matchers)
     }
 })
