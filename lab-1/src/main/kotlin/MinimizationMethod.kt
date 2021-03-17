@@ -13,7 +13,14 @@ interface MinimizationMethod {
     fun findMinimum(
         rangeStart: Rational,
         rangeEnd: Rational,
-        eps: Rational = DEFAULT_EPS,
         function: OneDimFunction
     ): MinimizationResult
 }
+
+abstract class EpsilonCheckMinimizationMethod(
+    val epsilon: Rational
+) : MinimizationMethod
+
+abstract class IterationCountCheckMinimizationMethod(
+    val maxIterations: Long
+) : MinimizationMethod

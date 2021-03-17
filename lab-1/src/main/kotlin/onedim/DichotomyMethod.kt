@@ -1,5 +1,7 @@
 package onedim
 
+import DEFAULT_EPS
+import EpsilonCheckMinimizationMethod
 import MinimizationMethod
 import MinimizationResult
 import OneDimFunction
@@ -8,18 +10,17 @@ import common.avg
 import kotlin.math.abs
 import kotlin.random.Random
 
-class DichotomyMethod : MinimizationMethod {
+class DichotomyMethod(eps: Rational = DEFAULT_EPS) : EpsilonCheckMinimizationMethod(eps) {
     override fun findMinimum(
         rangeStart: Rational,
         rangeEnd: Rational,
-        eps: Rational,
         function: OneDimFunction
     ): MinimizationResult {
         var iterations = 0
         var start = rangeStart
         var end = rangeEnd
 
-        while (abs(end - start) > eps) {
+        while (abs(end - start) > epsilon) {
             val delta = Random.nextDouble(0.0, (end - start) / 2)
             val mid = avg(start, end)
 

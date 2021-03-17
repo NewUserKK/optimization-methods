@@ -1,6 +1,7 @@
 package onedim
 
-import MinimizationMethod
+import DEFAULT_EPS
+import EpsilonCheckMinimizationMethod
 import MinimizationResult
 import OneDimFunction
 import Rational
@@ -8,14 +9,13 @@ import common.avg
 import kotlin.math.abs
 import kotlin.math.sqrt
 
-class GoldenRatioMethod : MinimizationMethod {
+class GoldenRatioMethod(eps: Rational = DEFAULT_EPS) : EpsilonCheckMinimizationMethod(eps) {
     private val PHI = (sqrt(5.0) + 1) / 2
     private val K = 2 - PHI   // equals to 1 / (PHI + 1)
 
     override fun findMinimum(
         rangeStart: Rational,
         rangeEnd: Rational,
-        eps: Rational,
         function: OneDimFunction
     ): MinimizationResult {
         var iterations = 1
@@ -29,7 +29,7 @@ class GoldenRatioMethod : MinimizationMethod {
         var f1 = function(x1)
         var f2 = function(x2)
 
-        while (abs(end - start) > eps) {
+        while (abs(end - start) > epsilon) {
             when {
                 f1 < f2 -> {
                     end = x2
