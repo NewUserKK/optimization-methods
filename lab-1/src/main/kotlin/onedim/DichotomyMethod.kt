@@ -1,9 +1,11 @@
-package dichotomy
+package onedim
 
-import common.MinimizationMethod
-import common.MinimizationResult
-import common.OneDimFunction
-import common.Rational
+import MinimizationMethod
+import MinimizationResult
+import OneDimFunction
+import Rational
+import common.avg
+import kotlin.math.abs
 import kotlin.random.Random
 
 class DichotomyMethod : MinimizationMethod {
@@ -17,9 +19,9 @@ class DichotomyMethod : MinimizationMethod {
         var start = rangeStart
         var end = rangeEnd
 
-        while (end - start > eps) {
+        while (abs(end - start) > eps) {
             val delta = Random.nextDouble(0.0, (end - start) / 2)
-            val mid = (start + end) / 2
+            val mid = avg(start, end)
 
             val x1 = mid - delta
             val x2 = mid + delta

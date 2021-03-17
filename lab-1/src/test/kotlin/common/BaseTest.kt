@@ -1,8 +1,9 @@
-package dichotomy
+package common
 
-import common.*
+import MinimizationMethod
+import MinimizationResult
+import OneDimFunction
 import io.kotest.core.spec.style.FreeSpec
-import io.kotest.matchers.shouldBe
 import kotlin.math.pow
 
 abstract class BaseTest(private val method: MinimizationMethod): FreeSpec({
@@ -27,8 +28,8 @@ abstract class BaseTest(private val method: MinimizationMethod): FreeSpec({
         )
 
         val actual = method.findMinimum(
-            rangeStart = -20.0,
-            rangeEnd = 20.0,
+            rangeStart = -2000.0,
+            rangeEnd = 2000.0,
             function = testFunction
         )
 

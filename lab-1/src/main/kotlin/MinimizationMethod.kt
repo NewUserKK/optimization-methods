@@ -1,5 +1,3 @@
-package common
-
 typealias OneDimFunction = (Rational) -> Rational
 typealias Rational = Double
 

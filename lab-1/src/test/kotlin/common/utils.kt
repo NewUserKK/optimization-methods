@@ -1,8 +1,8 @@
 package common
 
+import MinimizationResult
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
-import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
 import kotlin.math.abs
 
@@ -14,24 +14,6 @@ infix fun MinimizationResult.shouldBeAround(other: MinimizationResult) =
 fun MinimizationResult.shouldBeAround(expected: MinimizationResult, eps: Double) {
     this shouldBe minimizationResultMatcher(expected, eps)
 }
-
-fun matchAny(assertions: List<() -> Unit>) {
-    var passed = false
-    assertions.forEach { assert ->
-        try {
-            assert()
-            passed = true
-        } catch (e: AssertionError) {
-            // pass
-        }
-    }
-
-    if (!passed) {
-        throw AssertionError("No matchers passed!")
-    }
-}
-
-fun matchAny(vararg assertions: () -> Unit) = matchAny(assertions.toList())
 
 fun minimizationResultMatcher(expected: MinimizationResult, eps: Double): Matcher<MinimizationResult> =
     object : Matcher<MinimizationResult> {
@@ -48,3 +30,26 @@ fun minimizationResultMatcher(expected: MinimizationResult, eps: Double): Matche
             )
         }
     }
+
+
+fun matchAny(assertions: List<() -> Unit>) {
+    var passed = false
+    var lastAssertionError: AssertionError? = null
+    assertions.forEach { assert ->
+        try {
+            assert()
+            passed = true
+        } catch (e: AssertionError) {
+            lastAssertionError = e
+        }
+    }
+
+    if (!passed) {
+        throw AssertionError(
+            "No matchers passed! See last assertion error below",
+            lastAssertionError
+        )
+    }
+}
+
+fun matchAny(vararg assertions: () -> Unit) = matchAny(assertions.toList())
