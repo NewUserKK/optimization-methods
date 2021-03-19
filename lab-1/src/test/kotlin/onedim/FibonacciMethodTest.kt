@@ -1,5 +1,3 @@
 package onedim
 
-import common.BaseTest
-
-class FibonacciMethodTest : BaseTest(FibonacciMethod())
+class FibonacciMethodTest : OneDimBaseTest(FibonacciMethod())
