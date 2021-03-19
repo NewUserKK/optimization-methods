@@ -46,7 +46,9 @@ class GradientMethod(
                     newW,
                     function.invoke(newW),
                     iters
-                )
+                ).also {
+                    onStep?.invoke(it)
+                }
             }
             w = newW
         }

@@ -3,15 +3,14 @@ package gradient
 import MinimizationMethod
 import MinimizationResult
 import common.TwoDimFunction
+import common.saveToCSV
 import onedim.DichotomyMethod
 import onedim.GoldenRatioMethod
 
 fun main(args: Array<String>) {
-    val grad = GradientMethod()
-    println("Dichotomy: ")
-    println(runGradientWith(DichotomyMethod(), grad))
-    println("Golder Ration")
-    println(runGradientWith(GoldenRatioMethod(), grad))
+    val grad = GradientMethod(1e-3)
+    writeStats("Dichotomy", runGradientWith(DichotomyMethod(), grad))
+    writeStats("Golder_Ration", runGradientWith(GoldenRatioMethod(), grad))
     // TODO add third method
     //val dichRes = runGradientWith(DichotomyMethod(), grad)
 }
@@ -19,8 +18,9 @@ fun main(args: Array<String>) {
 private fun runGradientWith(
     stepFinder: MinimizationMethod,
     grad: GradientMethod
-): MinimizationResult {
-    return grad.findMinimum(
+): List<MinimizationResult> {
+    val res = ArrayList<MinimizationResult>()
+    grad.findMinimum(
         2,
         listOf(10000.0, 10000.0),
         TwoDimFunction { x, y -> x * x + 2 * y * y - x * y + x + y + 3 },
@@ -30,6 +30,14 @@ private fun runGradientWith(
                 4 * y - x + 1
             )
         },
-        DichotomyMethod()
+        stepFinder,
+        { r -> res.add(r) }
     )
+    return res
+}
+
+private fun writeStats(name: String, res: List<MinimizationResult>) {
+    res.joinToString("\n") { "${it.result}, ${it.iterations}" }.let {
+        saveToCSV(name, it)
+    }
 }
