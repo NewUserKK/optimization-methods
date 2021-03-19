@@ -8,17 +8,17 @@ typealias Matrix = Array<Array<Rational>>
 
 inline fun avg(x1: Rational, x2: Rational) = (x1 + x2) / 2
 
-fun List<Rational>.minus(another: List<Rational>): List<Rational> {
+operator fun List<Rational>.minus(another: List<Rational>): List<Rational> {
     assert(this.size == another.size)
     return this.zip(another).map { it.first - it.second }
 }
 
-fun List<Rational>.mult(another: List<Rational>): List<Rational> {
+operator fun List<Rational>.times(another: List<Rational>): List<Rational> {
     assert(this.size == another.size)
     return this.zip(another).map { it.first * it.second }
 }
 
-fun List<Rational>.mult(another: Rational): List<Rational> {
+operator fun List<Rational>.times(another: Rational): List<Rational> {
     return this.map { it * another }
 }
 

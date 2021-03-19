@@ -1,17 +1,19 @@
 package gradient
 
 import MinimizationResult
+import common.Gradient
 import common.NDimFunction
 import common.shouldBeAround
 import io.kotest.core.spec.style.FreeSpec
 import onedim.DichotomyMethod
 import kotlin.math.pow
 
-class GradientTest() : FreeSpec({
+class GradientTest : FreeSpec({
     // func: x^3 + 3xy^2 - 15x - 12y
-    val testFunction =
-        NDimFunction { args -> args[0].pow(3) + 3.0 * args[0] * args[1].pow(2) - 15.0 * args[0] - 12.0 * args[1] }
-    val gradient: Gradient = { args ->
+    val testFunction = NDimFunction { args ->
+        args[0].pow(3) + 3.0 * args[0] * args[1].pow(2) - 15.0 * args[0] - 12.0 * args[1]
+    }
+    val gradient = Gradient { args ->
         listOf(
             3.0 * args[0].pow(2) + 3.0 * args[1].pow(2) - 15.0,
             6.0 * args[1] * args[0] - 12.0

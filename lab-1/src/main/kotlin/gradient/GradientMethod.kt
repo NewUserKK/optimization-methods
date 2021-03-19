@@ -37,7 +37,7 @@ class GradientMethod(
 
             val grad = gradient.invoke(w)
             val step = findStep(function, w, grad, stepFinder)
-            val newW = w.minus(grad.mult(step))
+            val newW = w - grad * step
             if (abs(function(newW) - function(w)) < epsilon) {
                 return MinimizationResult(
                     newW,
@@ -60,10 +60,10 @@ class GradientMethod(
         return stepFinder.findMinimum(
             0.0,
             1.0
-        ) { step -> function.invoke(grad.minus(newGrad.mult(step))) }.argument[0]
+        ) { step -> function.invoke(grad - newGrad * step) }.argument[0]
     }
 
-    class ConstantStep(val step: Rational): MinimizationMethod {
+    class ConstantStep(private val step: Rational): MinimizationMethod {
         override fun findMinimum(
             rangeStart: Rational,
             rangeEnd: Rational,
@@ -71,6 +71,5 @@ class GradientMethod(
         ): MinimizationResult {
             return MinimizationResult(listOf(step), 0.0, 0)
         }
-
     }
 }
