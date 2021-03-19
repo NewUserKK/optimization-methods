@@ -2,20 +2,9 @@ package gradient
 
 import MinimizationMethod
 import MinimizationResult
-import common.NDimFunction
+import common.TwoDimFunction
 import onedim.DichotomyMethod
 import onedim.GoldenRatioMethod
-import kotlin.math.pow
-
-// func: x^3 + 3xy^2 - 15x - 12y
-private val testFunction =
-    NDimFunction { args -> args[0].pow(3) + 3.0 * args[0] * args[1].pow(2) - 15.0 * args[0] - 12.0 * args[1] }
-private val gradient: Gradient = { args ->
-    listOf(
-        3.0 * args[0].pow(2) + 3.0 * args[1].pow(2) - 15.0,
-        6.0 * args[1] * args[0] - 12.0
-    )
-}
 
 fun main(args: Array<String>) {
     val grad = GradientMethod()
@@ -27,12 +16,20 @@ fun main(args: Array<String>) {
     //val dichRes = runGradientWith(DichotomyMethod(), grad)
 }
 
-private fun runGradientWith(stepFinder: MinimizationMethod, grad: GradientMethod): MinimizationResult {
+private fun runGradientWith(
+    stepFinder: MinimizationMethod,
+    grad: GradientMethod
+): MinimizationResult {
     return grad.findMinimum(
         2,
-        listOf(0.0, 0.0),
-        testFunction,
-        gradient,
+        listOf(10000.0, 10000.0),
+        TwoDimFunction { x, y -> x * x + 2 * y * y - x * y + x + y + 3 },
+        { (x, y) ->
+            listOf(
+                2 * x - y + 1,
+                4 * y - x + 1
+            )
+        },
         DichotomyMethod()
     )
 }
