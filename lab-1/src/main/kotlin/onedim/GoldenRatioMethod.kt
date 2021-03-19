@@ -51,7 +51,7 @@ class GoldenRatioMethod(eps: Rational = DEFAULT_EPS) : EpsilonCheckMinimizationM
         }
 
         return MinimizationResult(
-            argument = avg(x1, x2),
+            argument = listOf(avg(x1, x2)),
             result = function(avg(x1, x2)),
             iterations = iterations
         )

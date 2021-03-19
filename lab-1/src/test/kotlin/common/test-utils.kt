@@ -19,7 +19,7 @@ fun minimizationResultMatcher(expected: MinimizationResult, eps: Double): Matche
     object : Matcher<MinimizationResult> {
         override fun test(value: MinimizationResult): MatcherResult {
             val passed =
-                abs(value.argument - expected.argument) < eps &&
+                value.argument.zip(expected.argument).all { abs(it.first - it.second) < eps }&&
                 abs(value.result - expected.result) < eps
 
             return MatcherResult(

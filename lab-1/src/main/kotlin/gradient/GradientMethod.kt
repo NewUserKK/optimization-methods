@@ -2,11 +2,11 @@ package gradient
 
 import DEFAULT_EPS
 import MinimizationMethod
-import MultiDimMinimizationResult
+import MinimizationResult
 import Rational
 import common.NDimFunction
 import common.minus
-import common.mul
+import common.mult
 import kotlin.math.abs
 
 typealias Gradient = (List<Rational>) -> List<Rational>
@@ -20,16 +20,16 @@ class GradientMethod(
         function: NDimFunction,
         gradient: Gradient,
         stepFinder: MinimizationMethod,
-        onStep: (MultiDimMinimizationResult) -> Unit
-    ): MultiDimMinimizationResult {
+        onStep: ((MinimizationResult) -> Unit)? = null
+    ): MinimizationResult {
         assert(start.size == n)
 
         var w = start
         var iters = 0
 
         while (true) {
-            onStep.invoke(
-                MultiDimMinimizationResult(
+            onStep?.invoke(
+                MinimizationResult(
                     w,
                     function.invoke(w),
                     iters
@@ -40,9 +40,9 @@ class GradientMethod(
 
             val grad = gradient.invoke(w)
             val step = findStep(function, w, grad, stepFinder)
-            val newW = w.minus(grad.mul(step))
+            val newW = w.minus(grad.mult(step))
             if (abs(function(newW) - function(w)) < epsilon) {
-                return MultiDimMinimizationResult(
+                return MinimizationResult(
                     newW,
                     function.invoke(newW),
                     iters
@@ -61,6 +61,6 @@ class GradientMethod(
         return stepFinder.findMinimum(
             0.0,
             1.0
-        ) { step -> function.invoke(grad.minus(newGrad.mul(step))) }.argument
+        ) { step -> function.invoke(grad.minus(newGrad.mult(step))) }.argument[0]
     }
 }

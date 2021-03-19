@@ -9,12 +9,12 @@ fun List<Rational>.minus(another: List<Rational>): List<Rational> {
     return this.zip(another).map { it.first - it.second }
 }
 
-fun List<Rational>.mul(another: List<Rational>): List<Rational> {
+fun List<Rational>.mult(another: List<Rational>): List<Rational> {
     assert(this.size == another.size)
     return this.zip(another).map { it.first * it.second }
 }
 
-fun List<Rational>.mul(another: Rational): List<Rational> {
+fun List<Rational>.mult(another: Rational): List<Rational> {
     return this.map { it * another }
 }
 

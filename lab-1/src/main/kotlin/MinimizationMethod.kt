@@ -3,12 +3,6 @@ import common.OneDimFunction
 typealias Rational = Double
 
 data class MinimizationResult(
-    val argument: Rational,
-    val result: Rational,
-    val iterations: Int
-)
-
-data class MultiDimMinimizationResult(
     val argument: List<Rational>,
     val result: Rational,
     val iterations: Int

@@ -38,7 +38,7 @@ class DichotomyMethod(eps: Rational = DEFAULT_EPS) : EpsilonCheckMinimizationMet
         }
 
         return MinimizationResult(
-            argument = end,
+            argument = listOf(end),
             result = function(end),
             iterations = iterations
         )
