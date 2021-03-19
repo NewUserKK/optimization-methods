@@ -1,5 +1,3 @@
 package onedim
 
-import common.BaseTest
-
-class DichotomyMethodTest : BaseTest(DichotomyMethod())
+class DichotomyMethodTest : OneDimBaseTest(DichotomyMethod())

@@ -19,12 +19,5 @@ interface MinimizationMethod {
     ): MinimizationResult
 }
 
-abstract class EpsilonCheckMinimizationMethod(
-    val epsilon: Rational
-) : MinimizationMethod
-
-abstract class IterationsCheckMinimizationMethod(
-    val maxIterations: Int
-) : MinimizationMethod
 
 

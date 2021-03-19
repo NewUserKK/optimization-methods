@@ -1,15 +1,15 @@
 package onedim
 
 import DEFAULT_MAX_ITERATIONS
-import IterationsCheckMinimizationMethod
+import MinimizationMethod
 import MinimizationResult
 import Rational
 import common.OneDimFunction
 import common.avg
 
 class FibonacciMethod(
-    maxIterations: Int = DEFAULT_MAX_ITERATIONS
-) : IterationsCheckMinimizationMethod(maxIterations) {
+    private val maxIterations: Int = DEFAULT_MAX_ITERATIONS
+) : MinimizationMethod {
     private val fibonacci = when {
         fibonacciCache.size > maxIterations -> fibonacciCache
         else -> constructFibonacciNumbers(maxIterations).also { fibonacciCache = it }
@@ -61,7 +61,7 @@ class FibonacciMethod(
     }
 
     companion object {
-        private var fibonacciCache = constructFibonacciNumbers(100)
+        private var fibonacciCache = constructFibonacciNumbers(DEFAULT_MAX_ITERATIONS)
 
         private fun constructFibonacciNumbers(n: Int): DoubleArray {
             val array = DoubleArray(n)

@@ -1,11 +1,14 @@
-package common
+package onedim
 
 import MinimizationMethod
 import MinimizationResult
+import common.OneDimFunction
+import common.matchAny
+import common.shouldBeAround
 import io.kotest.core.spec.style.FreeSpec
 import kotlin.math.pow
 
-abstract class BaseTest(private val method: MinimizationMethod): FreeSpec({
+abstract class OneDimBaseTest(private val method: MinimizationMethod): FreeSpec({
     // Desmos: x^{4\ }+3x^{3\ }-2x
     val testFunction = OneDimFunction { x -> x.pow(4) + 3 * x.pow(3) - 2 * x }
 
