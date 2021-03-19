@@ -23,5 +23,7 @@ compileTestKotlin {
 }
 
 dependencies {
+    implementation 'com.github.sh0nk:matplotlib4j:0.4.0'
+
     testImplementation 'io.kotest:kotest-runner-junit5:4.4.3'
 }
