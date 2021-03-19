@@ -9,6 +9,7 @@ data class MinimizationResult(
 )
 
 const val DEFAULT_EPS: Rational = 1e-8
+const val DEFAULT_MAX_ITERATIONS = 100
 
 interface MinimizationMethod {
     fun findMinimum(
@@ -22,8 +23,8 @@ abstract class EpsilonCheckMinimizationMethod(
     val epsilon: Rational
 ) : MinimizationMethod
 
-abstract class IterationCountCheckMinimizationMethod(
-    val maxIterations: Long
+abstract class IterationsCheckMinimizationMethod(
+    val maxIterations: Int
 ) : MinimizationMethod
 
 
