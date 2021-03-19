@@ -3,8 +3,8 @@ package gradient
 import DEFAULT_EPS
 import MinimizationMethod
 import MultiDimMinimizationResult
-import NDimFunction
 import Rational
+import common.NDimFunction
 import common.minus
 import common.mul
 import kotlin.math.abs
@@ -53,7 +53,7 @@ class GradientMethod(
     }
 
     private fun findStep(
-        function: (List<Rational>) -> Rational,
+        function: NDimFunction,
         grad: List<Rational>,
         newGrad: List<Rational>,
         stepFinder: MinimizationMethod

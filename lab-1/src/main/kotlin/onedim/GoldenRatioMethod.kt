@@ -3,8 +3,8 @@ package onedim
 import DEFAULT_EPS
 import EpsilonCheckMinimizationMethod
 import MinimizationResult
-import OneDimFunction
 import Rational
+import common.OneDimFunction
 import common.avg
 import kotlin.math.abs
 import kotlin.math.sqrt

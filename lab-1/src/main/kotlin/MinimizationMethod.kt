@@ -1,5 +1,5 @@
-typealias OneDimFunction = (Rational) -> Rational
-typealias NDimFunction = (List<Rational>) -> Rational
+import common.OneDimFunction
+
 typealias Rational = Double
 
 data class MinimizationResult(
@@ -31,3 +31,5 @@ abstract class EpsilonCheckMinimizationMethod(
 abstract class IterationCountCheckMinimizationMethod(
     val maxIterations: Long
 ) : MinimizationMethod
+
+
