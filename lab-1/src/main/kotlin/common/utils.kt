@@ -1,10 +1,10 @@
 package common
 
-import MinimizationResult
 import Rational
 import java.io.File
-import java.io.FileOutputStream
 import java.io.FileWriter
+
+typealias Matrix = Array<Array<Rational>>
 
 inline fun avg(x1: Rational, x2: Rational) = (x1 + x2) / 2
 
