@@ -11,7 +11,8 @@ fun main(args: Array<String>) {
     val grad = GradientMethod(1e-3)
     writeStats("Dichotomy", runGradientWith(DichotomyMethod(), grad))
     writeStats("Golder_Ration", runGradientWith(GoldenRatioMethod(), grad))
-    // TODO add third method
+    writeStats("Constant", runGradientWith(GradientMethod.ConstantStep(0.25), grad))
+    // TODO add another
     //val dichRes = runGradientWith(DichotomyMethod(), grad)
 }
 

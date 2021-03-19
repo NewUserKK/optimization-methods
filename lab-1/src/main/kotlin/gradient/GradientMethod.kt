@@ -5,6 +5,7 @@ import MinimizationMethod
 import MinimizationResult
 import Rational
 import common.NDimFunction
+import common.OneDimFunction
 import common.minus
 import common.mult
 import kotlin.math.abs
@@ -64,5 +65,16 @@ class GradientMethod(
             0.0,
             1.0
         ) { step -> function.invoke(grad.minus(newGrad.mult(step))) }.argument[0]
+    }
+
+    class ConstantStep(val step: Rational): MinimizationMethod {
+        override fun findMinimum(
+            rangeStart: Rational,
+            rangeEnd: Rational,
+            function: OneDimFunction
+        ): MinimizationResult {
+            return MinimizationResult(listOf(step), 0.0, 0)
+        }
+
     }
 }
