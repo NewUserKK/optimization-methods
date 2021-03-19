@@ -13,7 +13,7 @@ fun interface OneDimFunction : NDimFunction{
 }
 
 fun interface TwoDimFunction : NDimFunction{
-    override fun invoke(args: List<Rational>): Rational = this(args[0], args[0])
+    override fun invoke(args: List<Rational>): Rational = this(args[0], args[1])
 
     operator fun invoke(x: Rational, y: Rational) : Rational
 }
