@@ -4,13 +4,9 @@ import DEFAULT_EPS
 import MinimizationMethod
 import MinimizationResult
 import Rational
-import common.NDimFunction
-import common.OneDimFunction
-import common.minus
-import common.mult
+import common.*
 import kotlin.math.abs
 
-typealias Gradient = (List<Rational>) -> List<Rational>
 
 class GradientMethod(
     val epsilon: Rational = DEFAULT_EPS

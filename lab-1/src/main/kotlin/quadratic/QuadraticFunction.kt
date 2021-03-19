@@ -1,8 +1,8 @@
 package quadratic
 
 import Rational
+import common.Gradient
 import common.NDimFunction
-import gradient.Gradient
 import java.util.*
 
 class QuadraticFunction(
@@ -44,7 +44,7 @@ fun QuadraticFunction.getConditionNumber(): Rational {
     return maxEigenvalue / minEigenvalue
 }
 
-fun QuadraticFunction.getGradient(): Gradient = { args ->
+fun QuadraticFunction.getGradient(): Gradient = Gradient { args ->
     (0 until n).map { getPartialDerivative(it, args) }
 }
 

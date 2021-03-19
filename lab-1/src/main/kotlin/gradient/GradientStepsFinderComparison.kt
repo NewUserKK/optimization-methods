@@ -2,10 +2,19 @@ package gradient
 
 import MinimizationMethod
 import MinimizationResult
+import common.Gradient
 import common.TwoDimFunction
 import common.saveToCSV
 import onedim.DichotomyMethod
 import onedim.GoldenRatioMethod
+
+val func = TwoDimFunction { x, y -> x * x + 2 * y * y - x * y + x + y + 3 }
+val grad = Gradient { (x, y) ->
+    listOf(
+        2 * x - y + 1,
+        4 * y - x + 1
+    )
+}
 
 fun main(args: Array<String>) {
     val grad = GradientMethod(1e-3)
@@ -18,19 +27,14 @@ fun main(args: Array<String>) {
 
 private fun runGradientWith(
     stepFinder: MinimizationMethod,
-    grad: GradientMethod
+    gradMethod: GradientMethod
 ): List<MinimizationResult> {
     val res = ArrayList<MinimizationResult>()
-    grad.findMinimum(
+    gradMethod.findMinimum(
         2,
         listOf(10000.0, 10000.0),
-        TwoDimFunction { x, y -> x * x + 2 * y * y - x * y + x + y + 3 },
-        { (x, y) ->
-            listOf(
-                2 * x - y + 1,
-                4 * y - x + 1
-            )
-        },
+        func,
+        grad,
         stepFinder,
         { r -> res.add(r) }
     )
