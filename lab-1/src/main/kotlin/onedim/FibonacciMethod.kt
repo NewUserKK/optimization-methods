@@ -3,8 +3,8 @@ package onedim
 import DEFAULT_MAX_ITERATIONS
 import IterationsCheckMinimizationMethod
 import MinimizationResult
-import OneDimFunction
 import Rational
+import common.OneDimFunction
 import common.avg
 
 class FibonacciMethod(
@@ -54,7 +54,7 @@ class FibonacciMethod(
         }
 
         return MinimizationResult(
-            argument = avg(x1, x2),
+            argument = listOf(avg(x1, x2)),
             result = function(avg(x1, x2)),
             iterations = maxIterations - 1
         )
