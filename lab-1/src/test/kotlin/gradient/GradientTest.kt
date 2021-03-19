@@ -10,13 +10,13 @@ import kotlin.math.pow
 
 class GradientTest : FreeSpec({
     // func: x^3 + 3xy^2 - 15x - 12y
-    val testFunction = NDimFunction { args ->
-        args[0].pow(3) + 3.0 * args[0] * args[1].pow(2) - 15.0 * args[0] - 12.0 * args[1]
+    val testFunction = NDimFunction { (x, y) ->
+        x.pow(3) + 3.0 * x * y.pow(2) - 15.0 * x - 12.0 * y
     }
-    val gradient = Gradient { args ->
+    val gradient = Gradient { (x, y) ->
         listOf(
-            3.0 * args[0].pow(2) + 3.0 * args[1].pow(2) - 15.0,
-            6.0 * args[1] * args[0] - 12.0
+            3.0 * x.pow(2) + 3.0 * y.pow(2) - 15.0,
+            6.0 * y * x - 12.0
         )
     }
     val method = GradientMethod()
