@@ -1,11 +1,11 @@
-package ru.itmo.optmethods.methods.gradient
+package ru.itmo.optmethods.methods.gradient.comparison
 
 import ru.itmo.optmethods.methods.MinimizationMethod
 import ru.itmo.optmethods.methods.MinimizationResult
-import ru.itmo.optmethods.common.Gradient
-import ru.itmo.optmethods.common.InvocationsCountingFunction
-import ru.itmo.optmethods.common.TwoDimFunction
+import ru.itmo.optmethods.functions.Gradient
+import ru.itmo.optmethods.functions.TwoDimFunction
 import ru.itmo.optmethods.common.saveToCSV
+import ru.itmo.optmethods.methods.gradient.GradientMethod
 import ru.itmo.optmethods.methods.onedim.DichotomyMethod
 import ru.itmo.optmethods.methods.onedim.GoldenRatioMethod
 

@@ -1,4 +1,4 @@
-package ru.itmo.optmethods.common
+package ru.itmo.optmethods.functions
 
 import ru.itmo.optmethods.methods.Rational
 

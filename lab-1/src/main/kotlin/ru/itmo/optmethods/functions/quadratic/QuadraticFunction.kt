@@ -1,7 +1,7 @@
-package ru.itmo.optmethods.methods.quadratic
+package ru.itmo.optmethods.functions.quadratic
 
-import ru.itmo.optmethods.common.Gradient
-import ru.itmo.optmethods.common.NDimFunction
+import ru.itmo.optmethods.functions.Gradient
+import ru.itmo.optmethods.functions.NDimFunction
 import ru.itmo.optmethods.methods.Rational
 import java.util.*
 

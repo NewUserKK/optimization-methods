@@ -1,6 +1,10 @@
 package ru.itmo.optmethods.methods.gradient
 
 import ru.itmo.optmethods.common.*
+import ru.itmo.optmethods.functions.Gradient
+import ru.itmo.optmethods.functions.InvocationsCountingFunction
+import ru.itmo.optmethods.functions.NDimFunction
+import ru.itmo.optmethods.functions.OneDimFunction
 import ru.itmo.optmethods.methods.DEFAULT_EPS
 import ru.itmo.optmethods.methods.MinimizationMethod
 import ru.itmo.optmethods.methods.MinimizationResult

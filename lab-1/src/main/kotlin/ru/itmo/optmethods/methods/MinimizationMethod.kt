@@ -1,6 +1,6 @@
 package ru.itmo.optmethods.methods
 
-import ru.itmo.optmethods.common.OneDimFunction
+import ru.itmo.optmethods.functions.OneDimFunction
 
 typealias Rational = Double
 

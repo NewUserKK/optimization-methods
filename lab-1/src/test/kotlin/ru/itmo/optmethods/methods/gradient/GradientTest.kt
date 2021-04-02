@@ -1,8 +1,8 @@
 package ru.itmo.optmethods.methods.gradient
 
 import io.kotest.core.spec.style.FreeSpec
-import ru.itmo.optmethods.common.Gradient
-import ru.itmo.optmethods.common.TwoDimFunction
+import ru.itmo.optmethods.functions.Gradient
+import ru.itmo.optmethods.functions.TwoDimFunction
 import ru.itmo.optmethods.methods.MinimizationResult
 import ru.itmo.optmethods.methods.common.shouldBeAround
 import ru.itmo.optmethods.methods.onedim.DichotomyMethod

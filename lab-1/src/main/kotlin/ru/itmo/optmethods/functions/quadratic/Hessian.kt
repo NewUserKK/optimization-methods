@@ -1,4 +1,4 @@
-package ru.itmo.optmethods.methods.quadratic
+package ru.itmo.optmethods.functions.quadratic
 
 import ru.itmo.optmethods.common.Matrix
 import ru.itmo.optmethods.methods.Rational

@@ -1,13 +1,11 @@
 package ru.itmo.optmethods.methods.onedim
 
 import io.kotest.core.spec.style.FreeSpec
-import ru.itmo.optmethods.common.OneDimFunction
+import ru.itmo.optmethods.functions.OneDimFunction
 import ru.itmo.optmethods.common.matchAny
 import ru.itmo.optmethods.methods.MinimizationMethod
 import ru.itmo.optmethods.methods.MinimizationResult
 import ru.itmo.optmethods.methods.common.shouldBeAround
-import ru.itmo.optmethods.methods.common.shouldHaveSameCallCountAs
-import kotlin.math.exp
 import kotlin.math.pow
 
 abstract class OneDimBaseTest(private val method: MinimizationMethod) : FreeSpec() {

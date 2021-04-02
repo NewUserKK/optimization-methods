@@ -1,7 +1,12 @@
-package ru.itmo.optmethods.methods.gradient
+package ru.itmo.optmethods.methods.gradient.comparison
 
 import ru.itmo.optmethods.methods.MinimizationResult
 import ru.itmo.optmethods.common.*
+import ru.itmo.optmethods.functions.Gradient
+import ru.itmo.optmethods.functions.NDimFunction
+import ru.itmo.optmethods.functions.TwoDimFunction
+import ru.itmo.optmethods.functions.TwoDimGradient
+import ru.itmo.optmethods.methods.gradient.GradientMethod
 import ru.itmo.optmethods.methods.onedim.DichotomyMethod
 import kotlin.math.pow
 

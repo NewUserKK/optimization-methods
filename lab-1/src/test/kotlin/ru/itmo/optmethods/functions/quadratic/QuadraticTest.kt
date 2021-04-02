@@ -1,4 +1,4 @@
-package ru.itmo.optmethods.methods.quadratic
+package ru.itmo.optmethods.functions.quadratic
 
 fun main() {
 //    val gm = GradientMethod()
