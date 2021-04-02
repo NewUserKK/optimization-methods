@@ -1,16 +1,15 @@
 package ru.itmo.optmethods.methods.onedim
 
+import ru.itmo.optmethods.common.avg
 import ru.itmo.optmethods.functions.InvocationsCountingFunction
 import ru.itmo.optmethods.functions.OneDimFunction
 import ru.itmo.optmethods.methods.DEFAULT_MAX_ITERATIONS
-import ru.itmo.optmethods.methods.MinimizationMethod
 import ru.itmo.optmethods.methods.MinimizationResult
 import ru.itmo.optmethods.methods.Rational
-import ru.itmo.optmethods.common.avg
 
 class FibonacciMethod(
     private val maxIterations: Int = DEFAULT_MAX_ITERATIONS
-) : MinimizationMethod {
+) : OneDimMinimizationMethod() {
     private val fibonacci = when {
         fibonacciCache.size > maxIterations -> fibonacciCache
         else -> constructFibonacciNumbers(maxIterations).also { fibonacciCache = it }
@@ -37,6 +36,8 @@ class FibonacciMethod(
         var f1 = mFunction(x1)
         var f2 = mFunction(x2)
 
+        onIterationEnd(start, end)
+
         for (i in (2 until n).reversed()) {
             when {
                 f1 < f2 -> {
@@ -54,6 +55,8 @@ class FibonacciMethod(
                     f2 = mFunction(x2)
                 }
             }
+
+            onIterationEnd(start, end)
         }
 
         return MinimizationResult(

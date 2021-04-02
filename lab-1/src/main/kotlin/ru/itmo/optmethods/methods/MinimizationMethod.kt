@@ -14,6 +14,9 @@ data class MinimizationResult(
 const val DEFAULT_EPS: Rational = 1e-8
 const val DEFAULT_MAX_ITERATIONS = 100
 
+val MinimizationMethod.name: String
+    get() = this::class.simpleName!!
+
 interface MinimizationMethod {
     fun findMinimum(
         rangeStart: Rational,

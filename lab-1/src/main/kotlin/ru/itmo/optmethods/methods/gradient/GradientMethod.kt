@@ -1,6 +1,7 @@
 package ru.itmo.optmethods.methods.gradient
 
-import ru.itmo.optmethods.common.*
+import ru.itmo.optmethods.common.minus
+import ru.itmo.optmethods.common.times
 import ru.itmo.optmethods.functions.Gradient
 import ru.itmo.optmethods.functions.InvocationsCountingFunction
 import ru.itmo.optmethods.functions.NDimFunction
@@ -64,8 +65,10 @@ class GradientMethod(private val epsilon: Rational = DEFAULT_EPS) {
         stepFinder: MinimizationMethod
     ): Rational {
         return stepFinder.findMinimum(
-            rangeStart = 0.0, rangeEnd = 1.0
-        ) { step: Rational -> function(grad - newGrad * step) }.argument[0]
+            rangeStart = 0.0,
+            rangeEnd = 1.0,
+            function = { step: Rational -> function(grad - newGrad * step) }
+        ).argument[0]
     }
 
     class ConstantStep(private val step: Rational) : MinimizationMethod {

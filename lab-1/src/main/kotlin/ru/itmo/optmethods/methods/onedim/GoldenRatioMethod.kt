@@ -1,16 +1,17 @@
 package ru.itmo.optmethods.methods.onedim
 
+import ru.itmo.optmethods.common.avg
 import ru.itmo.optmethods.functions.InvocationsCountingFunction
 import ru.itmo.optmethods.functions.OneDimFunction
 import ru.itmo.optmethods.methods.DEFAULT_EPS
-import ru.itmo.optmethods.methods.MinimizationMethod
 import ru.itmo.optmethods.methods.MinimizationResult
 import ru.itmo.optmethods.methods.Rational
-import ru.itmo.optmethods.common.avg
 import kotlin.math.abs
 import kotlin.math.sqrt
 
-class GoldenRatioMethod(private val eps: Rational = DEFAULT_EPS) : MinimizationMethod {
+class GoldenRatioMethod(
+    private val eps: Rational = DEFAULT_EPS
+) : OneDimMinimizationMethod() {
     private val PHI = (sqrt(5.0) + 1) / 2
     private val K = 2 - PHI   // equals to 1 / (PHI + 1)
 
@@ -32,6 +33,8 @@ class GoldenRatioMethod(private val eps: Rational = DEFAULT_EPS) : MinimizationM
         var f1 = mFunction(x1)
         var f2 = mFunction(x2)
 
+        onIterationEnd(start, end)
+
         while (abs(end - start) > eps) {
             when {
                 f1 < f2 -> {
@@ -50,6 +53,7 @@ class GoldenRatioMethod(private val eps: Rational = DEFAULT_EPS) : MinimizationM
                 }
             }
 
+            onIterationEnd(start, end)
             iterations++
         }
 

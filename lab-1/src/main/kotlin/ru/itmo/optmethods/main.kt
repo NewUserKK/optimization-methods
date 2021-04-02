@@ -1,5 +1,8 @@
 package ru.itmo.optmethods
 
-fun main() {
+import ru.itmo.optmethods.methods.onedim.comparison.OneDimMethodsComparison
 
+
+fun main() {
+    OneDimMethodsComparison.compare()
 }
