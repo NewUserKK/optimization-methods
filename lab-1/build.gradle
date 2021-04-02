@@ -15,18 +15,19 @@ application {
     setMainClassName 'plot.PlotExampleKt'
 }
 
-
-Properties properties = new Properties()
-properties.load(project.rootProject.file('local.properties').newDataInputStream())
-
-
 compileKotlin {
     kotlinOptions.jvmTarget = '1.8'
 }
 
-def pythonPath = properties.getProperty('pythonPath')
 run {
-    doFirst { environment 'pythonPath', pythonPath }
+    File localPropsFile = project.rootProject.file('local.properties')
+    if (localPropsFile.exists()) {
+        Properties properties = new Properties()
+        properties.load(localPropsFile.newDataInputStream())
+        def pythonPath = properties.getProperty('pythonPath')
+
+        doFirst { environment 'pythonPath', pythonPath }
+    }
 }
 
 
