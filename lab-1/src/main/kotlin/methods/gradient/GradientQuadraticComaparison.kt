@@ -1,8 +1,8 @@
-package gradient
+package methods.gradient
 
-import MinimizationResult
+import methods.MinimizationResult
 import common.*
-import onedim.DichotomyMethod
+import methods.onedim.DichotomyMethod
 import kotlin.math.pow
 
 val func1 = TwoDimFunction { x, y -> x.pow(4) + y * y }

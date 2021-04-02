@@ -1,6 +1,6 @@
 package common
 
-import Rational
+import methods.Rational
 import java.io.File
 import java.io.FileWriter
 

@@ -1,6 +1,6 @@
 package common
 
-import MinimizationResult
+import methods.MinimizationResult
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.shouldBe

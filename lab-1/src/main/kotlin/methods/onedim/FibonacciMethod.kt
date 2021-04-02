@@ -1,9 +1,9 @@
-package onedim
+package methods.onedim
 
-import DEFAULT_MAX_ITERATIONS
-import MinimizationMethod
-import MinimizationResult
-import Rational
+import methods.DEFAULT_MAX_ITERATIONS
+import methods.MinimizationMethod
+import methods.MinimizationResult
+import methods.Rational
 import common.OneDimFunction
 import common.avg
 

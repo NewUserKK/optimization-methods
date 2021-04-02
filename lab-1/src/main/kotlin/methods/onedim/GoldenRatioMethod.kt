@@ -1,9 +1,9 @@
-package onedim
+package methods.onedim
 
-import DEFAULT_EPS
-import MinimizationMethod
-import MinimizationResult
-import Rational
+import methods.DEFAULT_EPS
+import methods.MinimizationMethod
+import methods.MinimizationResult
+import methods.Rational
 import common.OneDimFunction
 import common.avg
 import kotlin.math.abs

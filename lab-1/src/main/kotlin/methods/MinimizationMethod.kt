@@ -1,3 +1,5 @@
+package methods
+
 import common.OneDimFunction
 
 typealias Rational = Double

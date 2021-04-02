@@ -1,6 +1,6 @@
-package quadratic
+package methods.quadratic
 
-import Rational
+import methods.Rational
 import common.Gradient
 import common.NDimFunction
 import java.util.*

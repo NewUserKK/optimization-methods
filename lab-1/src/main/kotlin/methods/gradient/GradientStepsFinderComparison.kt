@@ -1,12 +1,12 @@
-package gradient
+package methods.gradient
 
-import MinimizationMethod
-import MinimizationResult
+import methods.MinimizationMethod
+import methods.MinimizationResult
 import common.Gradient
 import common.TwoDimFunction
 import common.saveToCSV
-import onedim.DichotomyMethod
-import onedim.GoldenRatioMethod
+import methods.onedim.DichotomyMethod
+import methods.onedim.GoldenRatioMethod
 
 val func = TwoDimFunction { x, y -> x * x + 2 * y * y - x * y + x + y + 3 }
 val grad = Gradient { (x, y) ->

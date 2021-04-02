@@ -1,8 +1,8 @@
-package onedim
+package methods.onedim
 
-import MinimizationMethod
-import MinimizationResult
-import Rational
+import methods.MinimizationMethod
+import methods.MinimizationResult
+import methods.Rational
 import common.OneDimFunction
 
 private const val DEFAULT_DELTA = 1e-3

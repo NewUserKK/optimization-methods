@@ -1,4 +1,4 @@
-package quadratic
+package methods.quadratic
 
 fun main() {
 //    val gm = GradientMethod()
@@ -12,12 +12,12 @@ fun main() {
 //                4 * y - x + 1
 //            )
 //        },
-//        object : MinimizationMethod {
+//        object : methods.MinimizationMethod {
 //            override fun findMinimum(
-//                rangeStart: Rational,
-//                rangeEnd: Rational,
+//                rangeStart: methods.Rational,
+//                rangeEnd: methods.Rational,
 //                function: OneDimFunction
-//            ): MinimizationResult =  MinimizationResult(listOf(1.0), 0.0, 0)
+//            ): methods.MinimizationResult =  methods.MinimizationResult(listOf(1.0), 0.0, 0)
 //        },
 //        {
 //            println(it.argument[0].toString() + ", " + it.argument[1].toString())

@@ -1,7 +1,7 @@
-package onedim
+package methods.onedim
 
-import MinimizationMethod
-import MinimizationResult
+import methods.MinimizationMethod
+import methods.MinimizationResult
 import common.OneDimFunction
 import common.matchAny
 import common.shouldBeAround

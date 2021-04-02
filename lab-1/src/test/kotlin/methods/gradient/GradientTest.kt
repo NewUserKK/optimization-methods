@@ -1,11 +1,11 @@
-package gradient
+package methods.gradient
 
-import MinimizationResult
+import methods.MinimizationResult
 import common.Gradient
 import common.NDimFunction
 import common.shouldBeAround
 import io.kotest.core.spec.style.FreeSpec
-import onedim.DichotomyMethod
+import methods.onedim.DichotomyMethod
 import kotlin.math.pow
 
 class GradientTest : FreeSpec({

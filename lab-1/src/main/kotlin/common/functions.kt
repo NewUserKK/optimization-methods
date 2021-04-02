@@ -1,6 +1,6 @@
 package common
 
-import Rational
+import methods.Rational
 
 fun interface NDimFunction {
     operator fun invoke(args: List<Rational>): Rational
