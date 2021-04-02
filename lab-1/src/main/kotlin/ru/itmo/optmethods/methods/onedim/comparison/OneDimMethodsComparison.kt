@@ -18,7 +18,6 @@ object OneDimMethodsComparison {
 
     fun compare() {
         val accuracies = (2..8).map { power -> 10.0.pow(-power) }
-        println(accuracies)
         val methodCount = 2
 
         val results = Array(methodCount) { mutableListOf<MinimizationResult>() }
