@@ -1,44 +1,79 @@
 package ru.itmo.optmethods.methods.onedim
 
-import ru.itmo.optmethods.methods.MinimizationMethod
-import ru.itmo.optmethods.methods.MinimizationResult
+import io.kotest.core.spec.style.FreeSpec
 import ru.itmo.optmethods.common.OneDimFunction
 import ru.itmo.optmethods.common.matchAny
-import ru.itmo.optmethods.common.shouldBeAround
-import io.kotest.core.spec.style.FreeSpec
+import ru.itmo.optmethods.methods.MinimizationMethod
+import ru.itmo.optmethods.methods.MinimizationResult
+import ru.itmo.optmethods.methods.common.shouldBeAround
+import ru.itmo.optmethods.methods.common.shouldHaveSameCallCountAs
+import kotlin.math.exp
 import kotlin.math.pow
 
-abstract class OneDimBaseTest(private val method: MinimizationMethod): FreeSpec({
+abstract class OneDimBaseTest(private val method: MinimizationMethod) : FreeSpec() {
     // Desmos: x^{4\ }+3x^{3\ }-2x
-    val testFunction = OneDimFunction { x -> x.pow(4) + 3 * x.pow(3) - 2 * x }
+    private val testFunction = OneDimFunction { x -> x.pow(4) + 3 * x.pow(3) - 2 * x }
 
-    "should correctly find one local minimum" {
-        val expected = MinimizationResult(listOf(-2.141), -4.148, 0)
-        val actual = method.findMinimum(
-            rangeStart = -4.0,
-            rangeEnd = -1.0,
-            function = testFunction
-        )
+    abstract fun expectedFunctionCallCount(iterations: Int): Int
 
-        expected shouldBeAround actual
-    }
+    init {
+        "should correctly find one local minimum" {
+            val expected = MinimizationResult(
+                argument = listOf(-2.141),
+                result = -4.148,
+                iterations = 0,
+                functionsCall = 0
+            )
 
-    "should correctly find any of local minimums" {
-        val expectedVariants = listOf(
-            MinimizationResult(listOf(0.432), -0.587, 0),
-            MinimizationResult(listOf(-2.141), -4.148, 0)
-        )
+            val actual = method.findMinimum(
+                rangeStart = -4.0,
+                rangeEnd = -1.0,
+                function = testFunction
+            )
 
-        val actual = method.findMinimum(
-            rangeStart = -2000.0,
-            rangeEnd = 2000.0,
-            function = testFunction
-        )
-
-        val matchers = expectedVariants.map { result ->
-            { actual shouldBeAround result }
+            actual shouldBeAround expected
         }
 
-        matchAny(matchers)
+        "should correctly find any of local minimums" {
+            val expectedVariants = listOf(
+                MinimizationResult(
+                    argument = listOf(0.432),
+                    result = -0.587,
+                    iterations = 0,
+                    functionsCall = 0
+                ),
+                MinimizationResult(
+                    argument = listOf(-2.141),
+                    result = -4.148,
+                    iterations = 0,
+                    functionsCall = 0
+                )
+            )
+
+            val actual = method.findMinimum(
+                rangeStart = -2000.0,
+                rangeEnd = 2000.0,
+                function = testFunction
+            )
+
+            val matchers = expectedVariants.map { result ->
+                { actual shouldBeAround result }
+            }
+
+            matchAny(matchers)
+        }
+
+        "function should be called proper amount of times" {
+            val actual = method.findMinimum(
+                rangeStart = -4.0,
+                rangeEnd = -1.0,
+                function = testFunction
+            )
+            val expected = actual.copy(
+                functionsCall = expectedFunctionCallCount(actual.iterations)
+            )
+
+            actual shouldBeAround expected
+        }
     }
-})
+}

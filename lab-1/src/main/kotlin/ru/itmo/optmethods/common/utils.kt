@@ -4,17 +4,17 @@ import ru.itmo.optmethods.methods.Rational
 import java.io.File
 import java.io.FileWriter
 
-typealias Matrix = Array<Array<Rational>>
+typealias Matrix = Array<DoubleArray>
 
 inline fun avg(x1: Rational, x2: Rational) = (x1 + x2) / 2
 
 operator fun List<Rational>.minus(another: List<Rational>): List<Rational> {
-    assert(this.size == another.size)
+    require(this.size == another.size)
     return this.zip(another).map { it.first - it.second }
 }
 
 operator fun List<Rational>.times(another: List<Rational>): List<Rational> {
-    assert(this.size == another.size)
+    require(this.size == another.size)
     return this.zip(another).map { it.first * it.second }
 }
 

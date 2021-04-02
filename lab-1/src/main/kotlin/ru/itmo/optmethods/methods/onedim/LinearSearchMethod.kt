@@ -1,9 +1,10 @@
 package ru.itmo.optmethods.methods.onedim
 
+import ru.itmo.optmethods.common.InvocationsCountingFunction
+import ru.itmo.optmethods.common.OneDimFunction
 import ru.itmo.optmethods.methods.MinimizationMethod
 import ru.itmo.optmethods.methods.MinimizationResult
 import ru.itmo.optmethods.methods.Rational
-import ru.itmo.optmethods.common.OneDimFunction
 
 private const val DEFAULT_DELTA = 1e-3
 
@@ -13,18 +14,20 @@ class LinearSearchMethod(private val delta: Rational = DEFAULT_DELTA): Minimizat
         rangeEnd: Rational,
         function: OneDimFunction
     ): MinimizationResult {
+        val mFunction = InvocationsCountingFunction(function)
+
         var end = rangeStart + delta
 
         var iterations = 1
 
         var minArg = rangeStart
-        var min = function(rangeStart)
+        var min = mFunction(rangeStart)
 
         while (end <= rangeEnd) {
             iterations++
             end = rangeStart + delta * iterations
 
-            val f = function(end)
+            val f = mFunction(end)
             if (f < min) {
                 min = f
                 minArg = end
@@ -34,7 +37,8 @@ class LinearSearchMethod(private val delta: Rational = DEFAULT_DELTA): Minimizat
         return MinimizationResult(
             argument = listOf(minArg),
             result = min,
-            iterations = iterations
+            iterations = iterations,
+            functionsCall = mFunction.invocationsCount
         )
     }
 }

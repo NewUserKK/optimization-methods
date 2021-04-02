@@ -1,8 +1,8 @@
 package ru.itmo.optmethods.methods.quadratic
 
-import ru.itmo.optmethods.methods.Rational
 import ru.itmo.optmethods.common.Gradient
 import ru.itmo.optmethods.common.NDimFunction
+import ru.itmo.optmethods.methods.Rational
 import java.util.*
 
 class QuadraticFunction(
@@ -13,8 +13,8 @@ class QuadraticFunction(
 ) : NDimFunction {
 
     init {
-        assert(n == a.n)
-        assert(n == b.size)
+        require(n == a.n)
+        require(n == b.size)
     }
 
     override fun invoke(args: List<Rational>): Rational {
@@ -49,7 +49,7 @@ fun QuadraticFunction.getGradient(): Gradient = Gradient { args ->
 }
 
 fun QuadraticFunction.getPartialDerivative(argIndex: Int, args: List<Rational>): Rational {
-    assert(argIndex < n)
+    require(argIndex < n)
     var value = b[argIndex]
     for (i in 0 until n) {
         value += 2 * a[argIndex, i] * args[i]

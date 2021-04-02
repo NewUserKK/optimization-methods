@@ -1,16 +1,14 @@
 package ru.itmo.optmethods.methods.gradient
 
+import ru.itmo.optmethods.common.*
 import ru.itmo.optmethods.methods.DEFAULT_EPS
 import ru.itmo.optmethods.methods.MinimizationMethod
 import ru.itmo.optmethods.methods.MinimizationResult
 import ru.itmo.optmethods.methods.Rational
-import ru.itmo.optmethods.common.*
 import kotlin.math.abs
 
 
-class GradientMethod(
-    val epsilon: Rational = DEFAULT_EPS
-) {
+class GradientMethod(private val epsilon: Rational = DEFAULT_EPS) {
     fun findMinimum(
         n: Int,
         start: List<Rational>,
@@ -19,7 +17,9 @@ class GradientMethod(
         stepFinder: MinimizationMethod,
         onStep: ((MinimizationResult) -> Unit)? = null
     ): MinimizationResult {
-        assert(start.size == n)
+        require(start.size == n)
+
+        val mFunction = InvocationsCountingFunction(function)
 
         var w = start
         var iters = 0
@@ -27,49 +27,53 @@ class GradientMethod(
         while (true) {
             onStep?.invoke(
                 MinimizationResult(
-                    w,
-                    function.invoke(w),
-                    iters
+                    argument = w,
+                    result = mFunction(w),
+                    iterations = iters,
+                    functionsCall = mFunction.invocationsCount
                 )
             )
 
             iters++
 
             val grad = gradient.invoke(w)
-            val step = findStep(function, w, grad, stepFinder)
+            val step = findStep(mFunction, w, grad, stepFinder)
             val newW = w - grad * step
+
             if (abs(function(newW) - function(w)) < epsilon) {
                 return MinimizationResult(
-                    newW,
-                    function.invoke(newW),
-                    iters
-                ).also {
-                    onStep?.invoke(it)
-                }
+                    argument = newW,
+                    result = mFunction.invoke(newW),
+                    iterations = iters,
+                    functionsCall = mFunction.invocationsCount
+                ).also { onStep?.invoke(it) }
             }
+
             w = newW
         }
     }
 
     private fun findStep(
-        function: NDimFunction,
+        function: InvocationsCountingFunction,
         grad: List<Rational>,
         newGrad: List<Rational>,
         stepFinder: MinimizationMethod
     ): Rational {
         return stepFinder.findMinimum(
-            0.0,
-            1.0
-        ) { step -> function.invoke(grad - newGrad * step) }.argument[0]
+            rangeStart = 0.0, rangeEnd = 1.0
+        ) { step: Rational -> function(grad - newGrad * step) }.argument[0]
     }
 
-    class ConstantStep(private val step: Rational): MinimizationMethod {
+    class ConstantStep(private val step: Rational) : MinimizationMethod {
         override fun findMinimum(
             rangeStart: Rational,
             rangeEnd: Rational,
             function: OneDimFunction
-        ): MinimizationResult {
-            return MinimizationResult(listOf(step), 0.0, 0)
-        }
+        ): MinimizationResult = MinimizationResult(
+            argument = listOf(step),
+            result = 0.0,
+            iterations = 0,
+            functionsCall = 0
+        )
     }
 }

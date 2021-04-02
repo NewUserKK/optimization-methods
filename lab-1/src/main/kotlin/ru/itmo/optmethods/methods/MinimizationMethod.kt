@@ -7,7 +7,8 @@ typealias Rational = Double
 data class MinimizationResult(
     val argument: List<Rational>,
     val result: Rational,
-    val iterations: Int
+    val iterations: Int,
+    val functionsCall: Int
 )
 
 const val DEFAULT_EPS: Rational = 1e-8

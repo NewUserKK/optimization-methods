@@ -1,10 +1,11 @@
 package ru.itmo.optmethods.methods.onedim
 
+import ru.itmo.optmethods.common.InvocationsCountingFunction
+import ru.itmo.optmethods.common.OneDimFunction
 import ru.itmo.optmethods.methods.DEFAULT_MAX_ITERATIONS
 import ru.itmo.optmethods.methods.MinimizationMethod
 import ru.itmo.optmethods.methods.MinimizationResult
 import ru.itmo.optmethods.methods.Rational
-import ru.itmo.optmethods.common.OneDimFunction
 import ru.itmo.optmethods.common.avg
 
 class FibonacciMethod(
@@ -20,6 +21,8 @@ class FibonacciMethod(
         rangeEnd: Rational,
         function: OneDimFunction
     ): MinimizationResult {
+        val mFunction = InvocationsCountingFunction(function)
+
         var start = rangeStart
         var end = rangeEnd
 
@@ -31,32 +34,33 @@ class FibonacciMethod(
         var x1 = start + (end - start) * kStart(n)
         var x2 = start + (end - start) * kEnd(n)
 
-        var f1 = function(x1)
-        var f2 = function(x2)
+        var f1 = mFunction(x1)
+        var f2 = mFunction(x2)
 
-        for (i in (2 until maxIterations - 1).reversed()) {
+        for (i in (2 until n).reversed()) {
             when {
                 f1 < f2 -> {
                     end = x2
                     x2 = x1
                     f2 = f1
                     x1 = start + kStart(i) * (end - start)
-                    f1 = function(x1)
+                    f1 = mFunction(x1)
                 }
                 else -> {
                     start = x1
                     x1 = x2
                     f1 = f2
                     x2 = start + kEnd(i) * (end - start)
-                    f2 = function(x2)
+                    f2 = mFunction(x2)
                 }
             }
         }
 
         return MinimizationResult(
             argument = listOf(avg(x1, x2)),
-            result = function(avg(x1, x2)),
-            iterations = maxIterations - 1
+            result = mFunction(avg(x1, x2)),
+            iterations = n + 1,
+            functionsCall = mFunction.invocationsCount
         )
     }
 

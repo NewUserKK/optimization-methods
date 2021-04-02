@@ -3,11 +3,13 @@ package ru.itmo.optmethods.methods.gradient
 import ru.itmo.optmethods.methods.MinimizationMethod
 import ru.itmo.optmethods.methods.MinimizationResult
 import ru.itmo.optmethods.common.Gradient
+import ru.itmo.optmethods.common.InvocationsCountingFunction
 import ru.itmo.optmethods.common.TwoDimFunction
 import ru.itmo.optmethods.common.saveToCSV
 import ru.itmo.optmethods.methods.onedim.DichotomyMethod
 import ru.itmo.optmethods.methods.onedim.GoldenRatioMethod
 
+// x^2 + 2y^2 - xy + x + y + 3
 val func = TwoDimFunction { x, y -> x * x + 2 * y * y - x * y + x + y + 3 }
 val grad = Gradient { (x, y) ->
     listOf(
@@ -29,16 +31,17 @@ private fun runGradientWith(
     stepFinder: MinimizationMethod,
     gradMethod: GradientMethod
 ): List<MinimizationResult> {
-    val res = ArrayList<MinimizationResult>()
+    val results = ArrayList<MinimizationResult>()
     gradMethod.findMinimum(
-        2,
-        listOf(10000.0, 10000.0),
-        func,
-        grad,
-        stepFinder,
-        { r -> res.add(r) }
+        n = 2,
+        start = listOf(10000.0, 10000.0),
+        function = func,
+        gradient = grad,
+        stepFinder = stepFinder,
+        onStep = { minimizationResult -> results.add(minimizationResult) }
     )
-    return res
+
+    return results
 }
 
 private fun writeStats(name: String, res: List<MinimizationResult>) {

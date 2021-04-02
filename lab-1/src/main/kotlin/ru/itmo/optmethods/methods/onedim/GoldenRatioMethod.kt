@@ -1,10 +1,11 @@
 package ru.itmo.optmethods.methods.onedim
 
+import ru.itmo.optmethods.common.InvocationsCountingFunction
+import ru.itmo.optmethods.common.OneDimFunction
 import ru.itmo.optmethods.methods.DEFAULT_EPS
 import ru.itmo.optmethods.methods.MinimizationMethod
 import ru.itmo.optmethods.methods.MinimizationResult
 import ru.itmo.optmethods.methods.Rational
-import ru.itmo.optmethods.common.OneDimFunction
 import ru.itmo.optmethods.common.avg
 import kotlin.math.abs
 import kotlin.math.sqrt
@@ -18,6 +19,8 @@ class GoldenRatioMethod(private val eps: Rational = DEFAULT_EPS) : MinimizationM
         rangeEnd: Rational,
         function: OneDimFunction
     ): MinimizationResult {
+        val mFunction = InvocationsCountingFunction(function)
+
         var iterations = 1
 
         var start = rangeStart
@@ -26,8 +29,8 @@ class GoldenRatioMethod(private val eps: Rational = DEFAULT_EPS) : MinimizationM
         var x1 = start + K * (end - start)
         var x2 = end - K * (end - start)
 
-        var f1 = function(x1)
-        var f2 = function(x2)
+        var f1 = mFunction(x1)
+        var f2 = mFunction(x2)
 
         while (abs(end - start) > eps) {
             when {
@@ -36,14 +39,14 @@ class GoldenRatioMethod(private val eps: Rational = DEFAULT_EPS) : MinimizationM
                     x2 = x1
                     f2 = f1
                     x1 = start + K * (end - start)
-                    f1 = function(x1)
+                    f1 = mFunction(x1)
                 }
                 else -> {
                     start = x1
                     x1 = x2
                     f1 = f2
                     x2 = end - K * (end - start)
-                    f2 = function(x2)
+                    f2 = mFunction(x2)
                 }
             }
 
@@ -52,8 +55,9 @@ class GoldenRatioMethod(private val eps: Rational = DEFAULT_EPS) : MinimizationM
 
         return MinimizationResult(
             argument = listOf(avg(x1, x2)),
-            result = function(avg(x1, x2)),
-            iterations = iterations
+            result = mFunction(avg(x1, x2)),
+            iterations = iterations,
+            functionsCall = mFunction.invocationsCount
         )
     }
 }
