@@ -3,7 +3,7 @@ plugins {
     id 'application'
 }
 
-group = 'ru.newuserkk'
+group = 'ru.itmo.optmethods'
 version = '1.0-SNAPSHOT'
 
 repositories {
@@ -12,7 +12,7 @@ repositories {
 
 
 application {
-    setMainClassName 'plot.PlotExampleKt'
+    setMainClassName 'ru.itmo.optmethods.MainKt'
 }
 
 compileKotlin {
