@@ -25,10 +25,6 @@ fun plot(show: Boolean = false, saveFigPath: String? = null, block: Plot.() -> U
         block()
         legend()
 
-        if (show) {
-            show()
-        }
-
         if (saveFigPath != null) {
             val file = File(saveFigPath)
             if (!file.parentFile.exists()) {
@@ -37,6 +33,10 @@ fun plot(show: Boolean = false, saveFigPath: String? = null, block: Plot.() -> U
 
             savefig(saveFigPath)
             executeSilently()
+        }
+
+        if (show) {
+            show()
         }
     }
 }

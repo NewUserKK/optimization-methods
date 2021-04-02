@@ -7,10 +7,21 @@ import ru.itmo.optmethods.methods.onedim.DichotomyMethod
 import ru.itmo.optmethods.methods.onedim.GoldenRatioMethod
 import ru.itmo.optmethods.plot.plot
 import ru.itmo.optmethods.plot.points
+import kotlin.math.abs
 import kotlin.math.log10
 import kotlin.math.pow
 
-private data class Segment(val start: Rational, val end: Rational)
+private data class Segment(val start: Rational, val end: Rational) {
+    val size = abs(end - start)
+}
+
+private data class ComparisonResult(
+    val accuracy: Rational,
+    val dichotomyResult: MinimizationResult,
+    val dichotomySegments: List<Segment>,
+    val goldenRatioResult: MinimizationResult,
+    val goldenRatioSegments: List<Segment>
+)
 
 object OneDimMethodsComparison {
     // Desmos: x^{4\ }+3x^{3\ }-2x
@@ -18,48 +29,54 @@ object OneDimMethodsComparison {
 
     fun compare() {
         val accuracies = (2..8).map { power -> 10.0.pow(-power) }
-        val methodCount = 2
 
-        val results = Array(methodCount) { mutableListOf<MinimizationResult>() }
-        val segments = Array(methodCount) { mutableListOf<Segment>() }
+        val results = mutableListOf<ComparisonResult>()
 
         accuracies.forEach { eps ->
-            val methods = listOf(
-                DichotomyMethod(eps = eps),
-                GoldenRatioMethod(eps = eps)
-            )
+            val start = -10.0
+            val end = 10.0
 
-            require(methodCount == methods.size)
-
-            methods.forEachIndexed { i, method ->
-                method.setOnIterationEndListener { rangeStart, rangeEnd ->
-                    segments[i].add(Segment(rangeStart, rangeEnd))
+            val dichotomySegments = mutableListOf<Segment>()
+            val dichotomyMethod = DichotomyMethod(eps = eps).apply {
+                setOnIterationEndListener { rangeStart, rangeEnd ->
+                    dichotomySegments += Segment(rangeStart, rangeEnd)
                 }
             }
+            val dichotomyResult = dichotomyMethod.findMinimum(
+                rangeStart = start,
+                rangeEnd = end,
+                function = testFunction
+            )
 
-            (0 until methodCount).forEach { i ->
-                results[i].add(
-                    methods[i].findMinimum(
-                        rangeStart = -10.0,
-                        rangeEnd = 10.0,
-                        function = testFunction,
-                    )
-                )
+
+            val goldenRatioSegments = mutableListOf<Segment>()
+            val goldenRatioMethod = GoldenRatioMethod(eps = eps).apply {
+                setOnIterationEndListener { rangeStart, rangeEnd ->
+                    goldenRatioSegments += Segment(rangeStart, rangeEnd)
+                }
             }
+            val goldenRatioResult = goldenRatioMethod.findMinimum(
+                rangeStart = start,
+                rangeEnd = end,
+                function = testFunction,
+            )
+
+
+            results += ComparisonResult(
+                accuracy = eps,
+                dichotomyResult = dichotomyResult,
+                dichotomySegments = dichotomySegments,
+                goldenRatioResult = goldenRatioResult,
+                goldenRatioSegments = goldenRatioSegments
+            )
         }
 
-        buildPlots(
-            accuracies = accuracies.map { -log10(it) },
-            dichotomyResults = results[0],
-            goldenRatioResults = results[1]
-        )
+        buildPlots(results)
     }
 
-    private fun buildPlots(
-        accuracies: List<Double>,
-        dichotomyResults: List<MinimizationResult>,
-        goldenRatioResults: List<MinimizationResult>
-    ) {
+    private fun buildPlots(results: List<ComparisonResult>) {
+        val accuracies = results.map { -log10(it.accuracy) }
+
         plot(saveFigPath = "results/onedim/iterations.png") {
             title("Iterations count")
             xlabel("accuracy, negative pow of 10")
@@ -67,12 +84,12 @@ object OneDimMethodsComparison {
 
             points {
                 label("Dichotomy")
-                add(accuracies, dichotomyResults.map { it.iterations })
+                add(accuracies, results.map { it.dichotomyResult.iterations })
             }
 
             points {
                 label("Golden ratio")
-                add(accuracies, goldenRatioResults.map { it.iterations })
+                add(accuracies, results.map { it.goldenRatioResult.iterations })
             }
         }
 
@@ -83,13 +100,38 @@ object OneDimMethodsComparison {
             ylabel("function calls")
 
             points {
-                add(accuracies, dichotomyResults.map { it.functionsCall })
                 label("Dichotomy")
+                add(accuracies, results.map { it.dichotomyResult.functionsCall })
             }
 
             points {
-                add(accuracies, goldenRatioResults.map { it.functionsCall })
                 label("Golden ratio")
+                add(accuracies, results.map { it.goldenRatioResult.functionsCall })
+            }
+        }
+
+        plot(saveFigPath = "results/onedim/segments.png") {
+            val dichotomySegments = results.last().dichotomySegments
+            val goldenRatioSegments = results.last().goldenRatioSegments
+
+            title("Segment lengths, accuracy=${results.last().accuracy}")
+            xlabel("iterations")
+            ylabel("length of segment")
+
+            points {
+                label("Dichotomy")
+                add(
+                    dichotomySegments.indices.toList(),
+                    dichotomySegments.map { segment -> segment.size }
+                )
+            }
+
+            points {
+                label("Golden ratio")
+                add(
+                    goldenRatioSegments.indices.toList(),
+                    goldenRatioSegments.map { segment -> segment.size }
+                )
             }
         }
     }
