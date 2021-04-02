@@ -23,6 +23,7 @@ fun plot(show: Boolean = false, saveFigPath: String? = null, block: Plot.() -> U
 
     return Plot.create(pythonConfig).apply {
         block()
+        legend()
 
         if (show) {
             show()

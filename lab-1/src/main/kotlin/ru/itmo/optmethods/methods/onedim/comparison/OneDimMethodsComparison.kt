@@ -21,6 +21,7 @@ object OneDimMethodsComparison {
         val methodCount = 2
 
         val results = Array(methodCount) { mutableListOf<MinimizationResult>() }
+        val segments = Array(methodCount) { mutableListOf<Segment>() }
 
         accuracies.forEach { eps ->
             val methods = listOf(
@@ -30,10 +31,9 @@ object OneDimMethodsComparison {
 
             require(methodCount == methods.size)
 
-            val segments = methods.map { mutableListOf<Segment>() }
             methods.forEachIndexed { i, method ->
                 method.setOnIterationEndListener { rangeStart, rangeEnd ->
-                    segments[i] += Segment(rangeStart, rangeEnd)
+                    segments[i].add(Segment(rangeStart, rangeEnd))
                 }
             }
 
@@ -83,13 +83,13 @@ object OneDimMethodsComparison {
             ylabel("function calls")
 
             points {
-                label("Dichotomy")
                 add(accuracies, dichotomyResults.map { it.functionsCall })
+                label("Dichotomy")
             }
 
             points {
-                label("Golden ratio")
                 add(accuracies, goldenRatioResults.map { it.functionsCall })
+                label("Golden ratio")
             }
         }
     }
