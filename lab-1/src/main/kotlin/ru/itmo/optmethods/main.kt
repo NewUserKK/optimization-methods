@@ -11,6 +11,7 @@ fun main() {
 //    OneDimMethodsComparison.compare()
 //    GradientStepsFinderComparison.compare()
 //    GradientQuadraticComparison.compare()
-    ConditionNumberInfluenceComparison.compare()
-    ArgsCountInfluenceComparison.compare()
+//    ConditionNumberInfluenceComparison.compare()
+//    ArgsCountInfluenceComparison.compare()
+    NewtonAndGradComparison.compare()
 }
