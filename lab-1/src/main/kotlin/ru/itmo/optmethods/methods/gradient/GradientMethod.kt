@@ -50,6 +50,7 @@ class GradientMethod(
             if (iters >= maxIterations) throw GradientMethodException("Iteration limit exceeded")
 
             val grad = gradient.invoke(w)
+            if (!grad.vectorLength().isFinite()) throw GradientMethodException("Gradient value is not finite")
             if (grad.vectorLength() > maxGradientLength) throw GradientMethodException("Gradient value is too large");
 
             val step = findStep(mFunction, w, grad, stepFinder)

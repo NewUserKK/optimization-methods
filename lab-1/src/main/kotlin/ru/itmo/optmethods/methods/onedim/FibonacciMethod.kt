@@ -1,20 +1,17 @@
 package ru.itmo.optmethods.methods.onedim
 
+import ru.itmo.optmethods.common.PHI
 import ru.itmo.optmethods.common.avg
 import ru.itmo.optmethods.functions.InvocationsCountingFunction
 import ru.itmo.optmethods.functions.OneDimFunction
-import ru.itmo.optmethods.methods.DEFAULT_MAX_ITERATIONS
+import ru.itmo.optmethods.methods.DEFAULT_EPS
 import ru.itmo.optmethods.methods.MinimizationResult
 import ru.itmo.optmethods.methods.Rational
+import kotlin.math.*
 
 class FibonacciMethod(
-    private val maxIterations: Int = DEFAULT_MAX_ITERATIONS
+    private val eps: Rational = DEFAULT_EPS
 ) : OneDimMinimizationMethod() {
-    private val fibonacci = when {
-        fibonacciCache.size > maxIterations -> fibonacciCache
-        else -> constructFibonacciNumbers(maxIterations).also { fibonacciCache = it }
-    }
-
     override fun findMinimum(
         rangeStart: Rational,
         rangeEnd: Rational,
@@ -25,10 +22,11 @@ class FibonacciMethod(
         var start = rangeStart
         var end = rangeEnd
 
+        val maxIterations = findMaxIterations(rangeStart, rangeEnd, eps)
         val n = maxIterations - 1
 
-        val kStart = { i: Int -> fibonacci[i - 2] / fibonacci[i] }
-        val kEnd = { i: Int -> fibonacci[i - 1] / fibonacci[i] }
+        val kStart = { i: Int -> nthFibonacci(i - 2) / nthFibonacci(i) }
+        val kEnd = { i: Int -> nthFibonacci(i - 1) / nthFibonacci(i) }
 
         var x1 = start + (end - start) * kStart(n)
         var x2 = start + (end - start) * kEnd(n)
@@ -67,18 +65,18 @@ class FibonacciMethod(
         )
     }
 
-    companion object {
-        private var fibonacciCache = constructFibonacciNumbers(DEFAULT_MAX_ITERATIONS)
+    private fun nthFibonacci(n: Int): Rational =
+        round((PHI.pow(n) - (-PHI).pow(-n)) / sqrt(5.0))
 
-        private fun constructFibonacciNumbers(n: Int): DoubleArray {
-            val array = DoubleArray(n)
-            array[0] = 1.0
-            array[1] = 1.0
-            for (i in 2 until n) {
-                array[i] = array[i - 1] + array[i - 2]
-            }
+    private fun findMaxIterations(rangeStart: Rational, rangeEnd: Rational, eps: Rational): Int {
+        val rangeLength = abs(rangeEnd - rangeStart)
+        val limit = rangeLength / eps
 
-            return array
+        var fibonacciN = 0
+        while (nthFibonacci(fibonacciN) < limit) {
+            fibonacciN++
         }
+
+        return fibonacciN
     }
 }
