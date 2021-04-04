@@ -14,11 +14,11 @@ import kotlin.math.pow
 
 object GradientQuadraticComparison {
 
-    // x^4 + y^2
-    val func1 = TwoDimFunction { x, y -> x.pow(4) + y * y }
+    // x^2 + y^2
+    val func1 = TwoDimFunction { x, y -> x * x + y * y }
     val grad1 = TwoDimGradient { x, y ->
         listOf(
-            4 * x.pow(3),
+            2 * x,
             2 * y
         )
     }
@@ -33,7 +33,7 @@ object GradientQuadraticComparison {
     }
 
     fun compare() {
-        buildPlots(func1, "x^4+y^2", runGradientWith(func1, grad1), -0.5, 1.2, -0.5, 1.2)
+        buildPlots(func1, "x^2+y^2", runGradientWith(func1, grad1), -0.5, 1.2, -0.5, 1.2)
         buildPlots(func2, "x^2+2y^2-xy+x+y+3", runGradientWith(func2, grad2), -1.5, 1.2, -1.5, 1.2)
     }
 
