@@ -81,7 +81,7 @@ object GradientQuadraticComparison {
                         30
                     )
                 val additional = results.map { it.result }.sorted().take(30)
-                levels(additional + levels)
+                levels((additional + levels).sorted().distinct())
                 add(xs, ys, zs)
             }
 
