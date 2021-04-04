@@ -1,7 +1,6 @@
 package ru.itmo.optmethods.methods.gradient.comparison
 
 import com.github.sh0nk.matplotlib4j.NumpyUtils
-import com.github.sh0nk.matplotlib4j.Plot
 import ru.itmo.optmethods.functions.Gradient
 import ru.itmo.optmethods.functions.NDimFunction
 import ru.itmo.optmethods.functions.TwoDimFunction
@@ -10,7 +9,8 @@ import ru.itmo.optmethods.methods.MinimizationResult
 import ru.itmo.optmethods.methods.Rational
 import ru.itmo.optmethods.methods.gradient.GradientMethod
 import ru.itmo.optmethods.methods.onedim.DichotomyMethod
-import kotlin.math.pow
+import ru.itmo.optmethods.plot.plot
+import ru.itmo.optmethods.plot.points
 
 object GradientQuadraticComparison {
 
@@ -63,29 +63,38 @@ object GradientQuadraticComparison {
         yMin: Rational,
         yMax: Rational
     ) {
-        val plt = Plot.create()
-        val contourBuilder = plt.contour().apply {
-            val steps = 100
-            val xs = NumpyUtils.linspace(xMin, xMax, steps)
-            val ys = NumpyUtils.linspace(yMin, yMax, steps)
-            val grid = NumpyUtils.meshgrid(xs, ys)
-            val zs = grid.calcZ { xi: Double, yj: Double ->
-                func.invoke(xi, yj)
-            }
-            val levels =
-                NumpyUtils.linspace(results.minOf { it.result }, results.maxOf { it.result }, 30)
-            val additional = results.map { it.result }.sorted().take(30)
-            levels(additional + levels)
-            add(xs, ys, zs)
-        }
-        plt.plot().apply {
-            add(results.map { it.argument[0] }, results.map { it.argument[1] })
-        }
-        plt.apply {
-            clabel(contourBuilder).inline(true).fontsize(10.0)
+        plot(saveFigPath = "results/gradient/quadratic_$funcName.png") {
             title(funcName)
-            savefig("results/gradient/quadratic_$funcName.png")
-        }.executeSilently()
 
+            val contourBuilder = contour().apply {
+                val steps = 100
+                val xs = NumpyUtils.linspace(xMin, xMax, steps)
+                val ys = NumpyUtils.linspace(yMin, yMax, steps)
+                val grid = NumpyUtils.meshgrid(xs, ys)
+                val zs = grid.calcZ { xi: Double, yj: Double ->
+                    func.invoke(xi, yj)
+                }
+                val levels =
+                    NumpyUtils.linspace(
+                        results.minOf { it.result },
+                        results.maxOf { it.result },
+                        30
+                    )
+                val additional = results.map { it.result }.sorted().take(30)
+                levels(additional + levels)
+                add(xs, ys, zs)
+            }
+
+            points {
+                add(
+                    results.map { it.argument[0] },
+                    results.map { it.argument[1] }
+                )
+            }
+
+            clabel(contourBuilder)
+                .inline(true)
+                .fontsize(10.0)
+        }
     }
 }
