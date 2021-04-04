@@ -31,8 +31,12 @@ class QuadraticFunction(
     }
 }
 
-fun Random.genQuadraticFunction(n: Int, maxCoefficientValue: Rational): QuadraticFunction {
-    val a = genHessian(n, maxCoefficientValue)
+fun Random.genQuadraticFunction(
+    n: Int,
+    k: Rational,
+    maxCoefficientValue: Rational
+): QuadraticFunction {
+    val a = genHessian(n, k, maxCoefficientValue)
     val b = Array(n) { nextDouble() * maxCoefficientValue }
     val c = nextDouble() * maxCoefficientValue
     return QuadraticFunction(n, a, b, c)

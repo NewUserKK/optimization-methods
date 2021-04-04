@@ -2,6 +2,7 @@ package ru.itmo.optmethods.methods.gradient
 
 import ru.itmo.optmethods.common.minus
 import ru.itmo.optmethods.common.times
+import ru.itmo.optmethods.common.vectorLength
 import ru.itmo.optmethods.functions.Gradient
 import ru.itmo.optmethods.functions.InvocationsCountingFunction
 import ru.itmo.optmethods.functions.NDimFunction
@@ -13,7 +14,11 @@ import ru.itmo.optmethods.methods.Rational
 import kotlin.math.abs
 
 
-class GradientMethod(private val epsilon: Rational = DEFAULT_EPS) {
+class GradientMethod(
+    private val epsilon: Rational = DEFAULT_EPS,
+    private val maxIterations: Int = Int.MAX_VALUE,
+    private val maxGradientLength: Rational = Double.MAX_VALUE
+) {
     fun findMinimum(
         n: Int,
         start: List<Rational>,
@@ -40,12 +45,18 @@ class GradientMethod(private val epsilon: Rational = DEFAULT_EPS) {
             )
 
             iters++
+            if (iters >= maxIterations) throw GradientMethodException("Iteration limit exceeded")
 
             val grad = gradient.invoke(w)
+            if (grad.vectorLength() > maxGradientLength) throw GradientMethodException("Gradient value is too large");
+
             val step = findStep(mFunction, w, grad, stepFinder)
             val newW = w - grad * step
 
-            if (abs(function(newW) - function(w)) < epsilon) {
+            val newValue = function(newW)
+            if (!newValue.isFinite()) throw GradientMethodException("New function value is not finite")
+
+            if (abs(newValue - function(w)) < epsilon) {
                 return MinimizationResult(
                     argument = newW,
                     result = mFunction.invoke(newW),

@@ -3,6 +3,7 @@ package ru.itmo.optmethods.common
 import ru.itmo.optmethods.methods.Rational
 import java.io.File
 import java.io.FileWriter
+import kotlin.math.sqrt
 
 typealias Matrix = Array<DoubleArray>
 
@@ -31,3 +32,5 @@ fun saveToCSV(name: String, str: String) {
         it.write(str)
     }
 }
+
+fun List<Rational>.vectorLength() : Rational = sqrt(sumByDouble { it * it })
