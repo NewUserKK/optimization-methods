@@ -6,7 +6,7 @@ import ru.itmo.optmethods.methods.onedim.comparison.OneDimMethodsComparison
 
 
 fun main() {
-    OneDimMethodsComparison.compare()
-    GradientStepsFinderComparison.compare()
-    GradientQuadraticComparison.compare()
+//    OneDimMethodsComparison.compare()
+//    GradientStepsFinderComparison.compare()
+//    GradientQuadraticComparison.compare()
 }
