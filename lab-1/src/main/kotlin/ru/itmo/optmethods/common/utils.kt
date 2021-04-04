@@ -14,6 +14,11 @@ operator fun List<Rational>.minus(another: List<Rational>): List<Rational> {
     return this.zip(another).map { it.first - it.second }
 }
 
+operator fun List<Rational>.plus(another: List<Rational>): List<Rational> {
+    require(this.size == another.size)
+    return this.zip(another).map { it.first + it.second }
+}
+
 operator fun List<Rational>.times(another: List<Rational>): List<Rational> {
     require(this.size == another.size)
     return this.zip(another).map { it.first * it.second }
