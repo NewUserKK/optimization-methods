@@ -4,7 +4,9 @@ import ru.itmo.optmethods.functions.OneDimFunction
 import ru.itmo.optmethods.methods.MinimizationResult
 import ru.itmo.optmethods.methods.Rational
 import ru.itmo.optmethods.methods.onedim.DichotomyMethod
+import ru.itmo.optmethods.methods.onedim.FibonacciMethod
 import ru.itmo.optmethods.methods.onedim.GoldenRatioMethod
+import ru.itmo.optmethods.methods.onedim.OneDimMinimizationMethod
 import ru.itmo.optmethods.plot.plot
 import ru.itmo.optmethods.plot.points
 import kotlin.math.abs
@@ -15,12 +17,16 @@ private data class Segment(val start: Rational, val end: Rational) {
     val size = abs(end - start)
 }
 
+private data class MethodComparisonResult(
+    val calculationResult: MinimizationResult,
+    val segments: List<Segment>
+)
+
 private data class ComparisonResult(
     val accuracy: Rational,
-    val dichotomyResult: MinimizationResult,
-    val dichotomySegments: List<Segment>,
-    val goldenRatioResult: MinimizationResult,
-    val goldenRatioSegments: List<Segment>
+    val dichotomyResult: MethodComparisonResult,
+    val goldenRatioResult: MethodComparisonResult,
+    val fibonacciResult: MethodComparisonResult
 )
 
 object OneDimMethodsComparison {
@@ -36,38 +42,26 @@ object OneDimMethodsComparison {
             val start = -10.0
             val end = 10.0
 
-            val dichotomySegments = mutableListOf<Segment>()
-            val dichotomyMethod = DichotomyMethod(eps = eps).apply {
-                setOnIterationEndListener { rangeStart, rangeEnd ->
-                    dichotomySegments += Segment(rangeStart, rangeEnd)
-                }
-            }
-            val dichotomyResult = dichotomyMethod.findMinimum(
-                rangeStart = start,
-                rangeEnd = end,
-                function = testFunction
+            val dichotomyResult = computeMethodResults(
+                DichotomyMethod(eps),
+                start, end
             )
 
-
-            val goldenRatioSegments = mutableListOf<Segment>()
-            val goldenRatioMethod = GoldenRatioMethod(eps = eps).apply {
-                setOnIterationEndListener { rangeStart, rangeEnd ->
-                    goldenRatioSegments += Segment(rangeStart, rangeEnd)
-                }
-            }
-            val goldenRatioResult = goldenRatioMethod.findMinimum(
-                rangeStart = start,
-                rangeEnd = end,
-                function = testFunction,
+            val goldenRatioResult = computeMethodResults(
+                GoldenRatioMethod(eps),
+                start, end
             )
 
+            val fibonacciResult = computeMethodResults(
+                FibonacciMethod(eps),
+                start, end
+            )
 
             results += ComparisonResult(
                 accuracy = eps,
                 dichotomyResult = dichotomyResult,
-                dichotomySegments = dichotomySegments,
                 goldenRatioResult = goldenRatioResult,
-                goldenRatioSegments = goldenRatioSegments
+                fibonacciResult = fibonacciResult
             )
         }
 
@@ -84,12 +78,18 @@ object OneDimMethodsComparison {
 
             points {
                 label("Dichotomy")
-                add(accuracies, results.map { it.dichotomyResult.iterations })
+                add(accuracies, results.map { it.dichotomyResult.calculationResult.iterations })
             }
 
             points {
                 label("Golden ratio")
-                add(accuracies, results.map { it.goldenRatioResult.iterations })
+                add(accuracies, results.map { it.goldenRatioResult.calculationResult.iterations })
+            }
+
+            points {
+                label("Fibonacci")
+                linestyle("--")
+                add(accuracies, results.map { it.fibonacciResult.calculationResult.iterations })
             }
         }
 
@@ -101,18 +101,34 @@ object OneDimMethodsComparison {
 
             points {
                 label("Dichotomy")
-                add(accuracies, results.map { it.dichotomyResult.functionsCall })
+                add(
+                    accuracies,
+                    results.map { it.dichotomyResult.calculationResult.functionsCall }
+                )
             }
 
             points {
                 label("Golden ratio")
-                add(accuracies, results.map { it.goldenRatioResult.functionsCall })
+                add(
+                    accuracies,
+                    results.map { it.goldenRatioResult.calculationResult.functionsCall }
+                )
+            }
+
+            points {
+                label("Fibonacci")
+                linestyle("--")
+                add(
+                    accuracies,
+                    results.map { it.fibonacciResult.calculationResult.functionsCall }
+                )
             }
         }
 
         plot(saveFigPath = "results/onedim/segments.png") {
-            val dichotomySegments = results.last().dichotomySegments
-            val goldenRatioSegments = results.last().goldenRatioSegments
+            val dichotomySegments = results.last().dichotomyResult.segments
+            val goldenRatioSegments = results.last().goldenRatioResult.segments
+            val fibonacciSegments = results.last().fibonacciResult.segments
 
             title("Segment lengths, accuracy=${results.last().accuracy}")
             xlabel("iterations")
@@ -133,6 +149,35 @@ object OneDimMethodsComparison {
                     goldenRatioSegments.map { segment -> segment.size }
                 )
             }
+
+            points {
+                label("Fibonacci")
+                linestyle("--")
+                add(
+                    fibonacciSegments.indices.toList(),
+                    fibonacciSegments.map { segment -> segment.size }
+                )
+            }
         }
+    }
+
+    private fun computeMethodResults(
+        minimizationMethod: OneDimMinimizationMethod,
+        start: Rational,
+        end: Rational
+    ): MethodComparisonResult {
+        val segments = mutableListOf<Segment>()
+        val method = minimizationMethod.apply {
+            setOnIterationEndListener { rangeStart, rangeEnd ->
+                segments += Segment(rangeStart, rangeEnd)
+            }
+        }
+        val result = method.findMinimum(
+            rangeStart = start,
+            rangeEnd = end,
+            function = testFunction
+        )
+
+        return MethodComparisonResult(calculationResult = result, segments = segments)
     }
 }

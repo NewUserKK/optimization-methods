@@ -6,13 +6,12 @@ import ru.itmo.optmethods.functions.OneDimFunction
 import ru.itmo.optmethods.methods.DEFAULT_EPS
 import ru.itmo.optmethods.methods.MinimizationResult
 import ru.itmo.optmethods.methods.Rational
+import ru.itmo.optmethods.common.PHI
 import kotlin.math.abs
-import kotlin.math.sqrt
 
 class GoldenRatioMethod(
     private val eps: Rational = DEFAULT_EPS
 ) : OneDimMinimizationMethod() {
-    private val PHI = (sqrt(5.0) + 1) / 2
     private val K = 2 - PHI   // equals to 1 / (PHI + 1)
 
     override fun findMinimum(
