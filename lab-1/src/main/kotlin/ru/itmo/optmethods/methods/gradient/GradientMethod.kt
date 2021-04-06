@@ -12,6 +12,7 @@ import ru.itmo.optmethods.methods.DEFAULT_EPS
 import ru.itmo.optmethods.methods.MinimizationMethod
 import ru.itmo.optmethods.methods.MinimizationResult
 import ru.itmo.optmethods.methods.Rational
+import ru.itmo.optmethods.methods.onedim.LinearSearchMethod
 import kotlin.math.abs
 import kotlin.math.sqrt
 
@@ -76,17 +77,16 @@ class GradientMethod(
         function: InvocationsCountingFunction,
         grad: List<Rational>,
         newGrad: List<Rational>,
-        stepFinder: MinimizationMethod,
-        useMinus: Boolean = true
+        stepFinder: MinimizationMethod
     ): Rational {
         return stepFinder.findMinimum(
             rangeStart = 0.0,
             rangeEnd = 1.0,
-            function = { step: Rational -> function(if (useMinus) grad - newGrad * step else grad + newGrad * step) }
+            function = { step: Rational -> function(grad - newGrad * step) }
         ).argument[0]
     }
 
-    fun findMinimumAnti(
+    fun findMinimumFletcherReeves(
         n: Int,
         start: List<Rational>,
         function: NDimFunction,
@@ -103,7 +103,7 @@ class GradientMethod(
         var w = start
         while (true) {
             var curIter = 0
-            var direction = gradient.invoke(w).map { -it }
+            var direction = gradient.invoke(w)
             while (true) {
                 onStep?.invoke(
                     MinimizationResult(
@@ -119,12 +119,11 @@ class GradientMethod(
                 val grad = gradient.invoke(w)
                 if (grad.vectorLength() > maxGradientLength) throw GradientMethodException("Gradient value is too large")
 
-                val step = findStep(mFunction, w, direction, stepFinder, false)
-                val newW = w + direction * step
-                w = newW
+                val step = findStep(mFunction, w, direction, stepFinder)
+                val newW = w - direction * step
                 val newGrad = gradient.invoke(newW)
 
-                if (sqrt(newGrad.map { it * it }.sum()) < epsilon) {
+                if (sqrt(newGrad.map { it * it }.sum()) < epsilon || abs((newW - w).sum()) < epsilon) {
                     return MinimizationResult(
                         argument = newW,
                         result = mFunction.invoke(newW),
@@ -133,14 +132,16 @@ class GradientMethod(
                     ).also { onStep?.invoke(it) }
                 }
 
+                w = newW
+                iters++
+
                 if (curIter + 1 == freq) {
                     break
                 }
 
                 val beta = newGrad.map { it * it }.sum() / grad.map { it * it }.sum()
-                direction = newGrad.map { -it } + direction.map { it * beta }
+                direction = newGrad + direction * beta
                 curIter++
-                iters++
             }
         }
     }

@@ -23,7 +23,7 @@ class GradientAntiTest : FreeSpec({
 
     "should correctly find one local minimum" {
         val expected = MinimizationResult(listOf(2.0, 1.0), -28.0, 0, 0)
-        val actual = method.findMinimumAnti(
+        val actual = method.findMinimumFletcherReeves(
             2,
             listOf(1.0, 1.0),
             testFunction,
