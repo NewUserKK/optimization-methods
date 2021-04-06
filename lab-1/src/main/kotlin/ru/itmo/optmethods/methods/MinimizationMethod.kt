@@ -1,8 +1,7 @@
 package ru.itmo.optmethods.methods
 
+import ru.itmo.optmethods.common.Rational
 import ru.itmo.optmethods.functions.OneDimFunction
-
-typealias Rational = Double
 
 data class MinimizationResult(
     val argument: List<Rational>,

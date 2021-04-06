@@ -1,11 +1,12 @@
 package ru.itmo.optmethods.methods.onedim
 
+import ru.itmo.optmethods.common.Rational
 import ru.itmo.optmethods.common.avg
 import ru.itmo.optmethods.functions.InvocationsCountingFunction
 import ru.itmo.optmethods.functions.OneDimFunction
 import ru.itmo.optmethods.methods.DEFAULT_EPS
 import ru.itmo.optmethods.methods.MinimizationResult
-import ru.itmo.optmethods.methods.Rational
+
 import kotlin.math.abs
 import kotlin.random.Random
 

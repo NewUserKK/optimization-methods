@@ -1,8 +1,9 @@
 package ru.itmo.optmethods.functions.quadratic
 
+import ru.itmo.optmethods.common.Rational
 import ru.itmo.optmethods.functions.Gradient
 import ru.itmo.optmethods.functions.NDimFunction
-import ru.itmo.optmethods.methods.Rational
+
 import java.util.*
 
 class QuadraticFunction(

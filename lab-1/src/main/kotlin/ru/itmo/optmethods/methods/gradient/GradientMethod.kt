@@ -1,9 +1,6 @@
 package ru.itmo.optmethods.methods.gradient
 
-import ru.itmo.optmethods.common.minus
-import ru.itmo.optmethods.common.plus
-import ru.itmo.optmethods.common.times
-import ru.itmo.optmethods.common.vectorLength
+import ru.itmo.optmethods.common.*
 import ru.itmo.optmethods.functions.Gradient
 import ru.itmo.optmethods.functions.InvocationsCountingFunction
 import ru.itmo.optmethods.functions.NDimFunction
@@ -11,7 +8,7 @@ import ru.itmo.optmethods.functions.OneDimFunction
 import ru.itmo.optmethods.methods.DEFAULT_EPS
 import ru.itmo.optmethods.methods.MinimizationMethod
 import ru.itmo.optmethods.methods.MinimizationResult
-import ru.itmo.optmethods.methods.Rational
+
 import ru.itmo.optmethods.methods.onedim.LinearSearchMethod
 import kotlin.math.abs
 import kotlin.math.sqrt

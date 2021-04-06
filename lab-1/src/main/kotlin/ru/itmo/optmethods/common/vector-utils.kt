@@ -1,13 +1,10 @@
 package ru.itmo.optmethods.common
 
-import ru.itmo.optmethods.methods.Rational
 import java.io.File
 import java.io.FileWriter
 import kotlin.math.sqrt
 
 typealias Matrix = Array<DoubleArray>
-
-inline fun avg(x1: Rational, x2: Rational) = (x1 + x2) / 2
 
 operator fun List<Rational>.minus(another: List<Rational>): List<Rational> {
     require(this.size == another.size)

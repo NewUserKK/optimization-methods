@@ -1,5 +1,6 @@
 package ru.itmo.optmethods.methods.gradient.comparison
 
+import ru.itmo.optmethods.comparison.MethodComparison
 import ru.itmo.optmethods.functions.Gradient
 import ru.itmo.optmethods.functions.TwoDimFunction
 import ru.itmo.optmethods.methods.MinimizationMethod
@@ -10,8 +11,7 @@ import ru.itmo.optmethods.methods.onedim.GoldenRatioMethod
 import ru.itmo.optmethods.plot.plot
 import ru.itmo.optmethods.plot.points
 
-object GradientStepsFinderComparison {
-
+object GradientStepsFinderComparison : MethodComparison {
     // x^2 + 2y^2 - xy + x + y + 3
     val func = TwoDimFunction { x, y -> x * x + 2 * y * y - x * y + x + y + 3 }
     val grad = Gradient { (x, y) ->
@@ -21,7 +21,7 @@ object GradientStepsFinderComparison {
         )
     }
 
-    fun compare() {
+    override fun compare() {
         val grad = GradientMethod(1e-3)
         buildPlots(
             runGradientWith(DichotomyMethod(), grad),

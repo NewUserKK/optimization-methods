@@ -1,11 +1,10 @@
-package ru.itmo.optmethods.common
+package ru.itmo.optmethods.plot
 
 import com.github.sh0nk.matplotlib4j.NumpyUtils
+import ru.itmo.optmethods.common.Rational
 import ru.itmo.optmethods.functions.TwoDimFunction
 import ru.itmo.optmethods.methods.MinimizationResult
-import ru.itmo.optmethods.methods.Rational
-import ru.itmo.optmethods.plot.plot
-import ru.itmo.optmethods.plot.points
+
 import kotlin.collections.plus
 
 object PlotUtils {
@@ -15,10 +14,8 @@ object PlotUtils {
         funcName: String,
         results: List<MinimizationResult>,
         levelsCount: Int,
-        xMin: Rational,
-        xMax: Rational,
-        yMin: Rational,
-        yMax: Rational
+        xMin: Rational, xMax: Rational,
+        yMin: Rational, yMax: Rational
     ) {
         plot(saveFigPath = "$path/$funcName.png") {
             title(funcName)

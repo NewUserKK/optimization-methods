@@ -1,6 +1,7 @@
 package ru.itmo.optmethods.functions
 
-import ru.itmo.optmethods.methods.Rational
+import ru.itmo.optmethods.common.Rational
+
 
 fun interface NDimFunction {
     operator fun invoke(args: List<Rational>): Rational

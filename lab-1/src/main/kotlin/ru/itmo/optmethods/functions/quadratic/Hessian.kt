@@ -1,7 +1,8 @@
 package ru.itmo.optmethods.functions.quadratic
 
 import ru.itmo.optmethods.common.Matrix
-import ru.itmo.optmethods.methods.Rational
+import ru.itmo.optmethods.common.Rational
+
 import java.util.*
 
 class Hessian(val n: Int, val values: Matrix) {

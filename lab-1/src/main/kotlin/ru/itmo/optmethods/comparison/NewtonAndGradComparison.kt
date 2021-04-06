@@ -1,18 +1,18 @@
-package ru.itmo.optmethods
+package ru.itmo.optmethods.comparison
 
+import ru.itmo.optmethods.common.Rational
 import ru.itmo.optmethods.functions.Gradient
 import ru.itmo.optmethods.functions.NDimFunction
 import ru.itmo.optmethods.functions.TwoDimFunction
 import ru.itmo.optmethods.functions.TwoDimGradient
 import ru.itmo.optmethods.methods.MinimizationResult
-import ru.itmo.optmethods.methods.Rational
+
 import ru.itmo.optmethods.methods.gradient.GradientMethod
 import ru.itmo.optmethods.methods.onedim.DichotomyMethod
 import kotlin.math.E
 import kotlin.math.pow
 
-object NewtonAndGradComparison {
-
+object NewtonAndGradComparison : MethodComparison {
     val starts = listOf(
         listOf(0.0, 0.0),
         listOf(5.0, 10.0),
@@ -47,6 +47,7 @@ object NewtonAndGradComparison {
             ) - ((y - 3.0) / 2.0).pow(2)
         )
     }
+
     // Ищем максимум для этой ф-ции
     // берем антиградиент, чтобы потом он вычитался, и получался положительный градиент
     val grad3 = TwoDimGradient { x, y ->
@@ -65,19 +66,18 @@ object NewtonAndGradComparison {
     }
 
 
-    fun compare() {
+    override fun compare() {
         println("for func: 100.0 * (y - x)^2 + (1 - x)^2")
         compare(func1, grad1)
+
         println("for func: 100.0 * (y - x^2)^2 + (1 - x)^2")
         compare(func2, grad2)
+
         println("for func: 2 * e^(-((x-1)/2)^2 - ((y-1)/1)^2) + 3 * e^(-((x-2)/3)^2 - ((y-3)/2)^2)")
         compare(func3, grad3)
     }
 
-    private fun compare(
-        func: NDimFunction,
-        grad: Gradient
-    ) {
+    private fun compare(func: NDimFunction, grad: Gradient) {
         starts.forEach {
             printStats(
                 it,
@@ -97,10 +97,7 @@ object NewtonAndGradComparison {
         //println("newton: iterations: ${newtonRes.size}, minimum: ${newtonRes.last().argument}")
     }
 
-    private fun runNewtonWith(
-        func: NDimFunction,
-        start: List<Rational>
-    ): List<MinimizationResult> {
+    private fun runNewtonWith(func: NDimFunction, start: List<Rational>): List<MinimizationResult> {
         // TODO
         return emptyList()
     }
@@ -121,7 +118,8 @@ object NewtonAndGradComparison {
                 onStep = { minimizationResult -> results.add(minimizationResult) },
                 10
             )
-        } catch (ignored: Exception) {}
+        } catch (ignored: Exception) {
+        }
 
         return results
     }

@@ -1,8 +1,10 @@
 package ru.itmo.optmethods.methods.onedim.comparison
 
+import ru.itmo.optmethods.comparison.MethodComparison
+import ru.itmo.optmethods.common.Rational
 import ru.itmo.optmethods.functions.OneDimFunction
 import ru.itmo.optmethods.methods.MinimizationResult
-import ru.itmo.optmethods.methods.Rational
+
 import ru.itmo.optmethods.methods.onedim.DichotomyMethod
 import ru.itmo.optmethods.methods.onedim.FibonacciMethod
 import ru.itmo.optmethods.methods.onedim.GoldenRatioMethod
@@ -29,11 +31,11 @@ private data class ComparisonResult(
     val fibonacciResult: MethodComparisonResult
 )
 
-object OneDimMethodsComparison {
+object OneDimMethodsComparison : MethodComparison {
     // Desmos: x^{4\ }+3x^{3\ }-2x
     private val testFunction = OneDimFunction { x -> x.pow(4) + 3 * x.pow(3) - 2 * x }
 
-    fun compare() {
+    override fun compare() {
         val accuracies = (2..8).map { power -> 10.0.pow(-power) }
 
         val results = mutableListOf<ComparisonResult>()

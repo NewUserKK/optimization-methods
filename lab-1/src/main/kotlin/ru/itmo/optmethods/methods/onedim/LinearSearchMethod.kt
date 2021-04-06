@@ -1,9 +1,10 @@
 package ru.itmo.optmethods.methods.onedim
 
+import ru.itmo.optmethods.common.Rational
 import ru.itmo.optmethods.functions.InvocationsCountingFunction
 import ru.itmo.optmethods.functions.OneDimFunction
 import ru.itmo.optmethods.methods.MinimizationResult
-import ru.itmo.optmethods.methods.Rational
+
 
 private const val DEFAULT_DELTA = 1e-3
 
