@@ -2,10 +2,11 @@ package ru.itmo.optmethods.functions.quadratic
 
 import ru.itmo.optmethods.common.Matrix
 import ru.itmo.optmethods.common.Rational
+import ru.itmo.optmethods.functions.DerivativeCountingFunction
 
 import java.util.*
 
-class Hessian(val n: Int, val values: Matrix) {
+class Hessian(val argsCount: Int, val values: Matrix) {
     operator fun get(i: Int, j: Int): Rational = values[i][j]
 }
 

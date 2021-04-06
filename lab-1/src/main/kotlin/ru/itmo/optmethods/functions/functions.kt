@@ -1,5 +1,6 @@
 package ru.itmo.optmethods.functions
 
+import org.apache.commons.math3.analysis.differentiation.DerivativeStructure
 import ru.itmo.optmethods.common.Rational
 
 
@@ -34,7 +35,14 @@ class InvocationsCountingFunction(val function: NDimFunction) {
 
     operator fun invoke(args: List<Rational>): Rational =
         function(args).also { invocationsCount++ }
+
     operator fun invoke(vararg args: Rational): Rational = invoke(args.toList())
 
     fun copy(): InvocationsCountingFunction = InvocationsCountingFunction(function)
+}
+
+fun interface DerivativeCountingFunction {
+    operator fun invoke(args: List<DerivativeStructure>): DerivativeStructure
+    operator fun invoke(vararg args: DerivativeStructure): DerivativeStructure =
+        invoke(args.toList())
 }

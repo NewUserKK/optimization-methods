@@ -14,7 +14,7 @@ class QuadraticFunction(
 ) : NDimFunction {
 
     init {
-        require(n == a.n)
+        require(n == a.argsCount)
         require(n == b.size)
     }
 
