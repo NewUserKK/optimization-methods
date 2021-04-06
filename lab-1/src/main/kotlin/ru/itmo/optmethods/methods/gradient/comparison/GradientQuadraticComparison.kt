@@ -33,8 +33,9 @@ object GradientQuadraticComparison : MethodComparison {
         val path = "results/gradient/quadratic"
         PlotUtils.buildContourPlot(
             path = path,
-            func = func1, funcName = "x^2+y^2",
-            results = runGradientWith(func1, grad1),
+            func = func1, title = "x^2+y^2",
+            labels = listOf(""),
+            results = listOf(runGradientWith(func1, grad1)),
             levelsCount = 30,
             xMin = -0.5, xMax = 1.2,
             yMin = -0.5, yMax = 1.2
@@ -42,8 +43,9 @@ object GradientQuadraticComparison : MethodComparison {
 
         PlotUtils.buildContourPlot(
             path = path,
-            func = func2, funcName = "x^2+2y^2-xy+x+y+3",
-            results = runGradientWith(func2, grad2),
+            func = func2, title = "x^2+2y^2-xy+x+y+3",
+            labels = listOf(""),
+            results = listOf(runGradientWith(func2, grad2)),
             levelsCount = 30,
             xMin = -1.5, xMax = 1.2,
             yMin = -1.5, yMax = 1.2

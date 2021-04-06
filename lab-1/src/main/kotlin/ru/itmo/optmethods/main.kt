@@ -1,7 +1,7 @@
 package ru.itmo.optmethods
 
 import ru.itmo.optmethods.comparison.MethodComparison
-import ru.itmo.optmethods.comparison.NewtonAndGradComparison
+import ru.itmo.optmethods.comparison.AllMethodsComparison
 import ru.itmo.optmethods.functions.quadratic.comparison.ArgsCountInfluenceComparison
 import ru.itmo.optmethods.functions.quadratic.comparison.ConditionNumberInfluenceComparison
 import ru.itmo.optmethods.methods.gradient.comparison.GradientQuadraticComparison
@@ -14,7 +14,7 @@ fun main() {
         OneDimMethodsComparison,
         GradientStepsFinderComparison,
         GradientQuadraticComparison,
-        NewtonAndGradComparison,
+        AllMethodsComparison,
     )
 
     val heavyComparisons: List<MethodComparison> = listOf(

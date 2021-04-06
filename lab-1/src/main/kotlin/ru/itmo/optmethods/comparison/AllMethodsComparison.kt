@@ -9,10 +9,11 @@ import ru.itmo.optmethods.methods.MinimizationResult
 
 import ru.itmo.optmethods.methods.gradient.GradientMethod
 import ru.itmo.optmethods.methods.onedim.DichotomyMethod
+import ru.itmo.optmethods.plot.PlotUtils
 import kotlin.math.E
 import kotlin.math.pow
 
-object NewtonAndGradComparison : MethodComparison {
+object AllMethodsComparison : MethodComparison {
     val starts = listOf(
         listOf(0.0, 0.0),
         listOf(5.0, 10.0),
@@ -67,42 +68,67 @@ object NewtonAndGradComparison : MethodComparison {
 
 
     override fun compare() {
-        println("for func: 100.0 * (y - x)^2 + (1 - x)^2")
-        compare(func1, grad1)
-
-        println("for func: 100.0 * (y - x^2)^2 + (1 - x)^2")
-        compare(func2, grad2)
-
-        println("for func: 2 * e^(-((x-1)/2)^2 - ((y-1)/1)^2) + 3 * e^(-((x-2)/3)^2 - ((y-3)/2)^2)")
-        compare(func3, grad3)
+        compare("100.0 * (y - x)^2 + (1 - x)^2", func1, grad1)
+        compare("100.0 * (y - x^2)^2 + (1 - x)^2",func2, grad2)
+        compare("func3-long",func3, grad3)
     }
 
-    private fun compare(func: NDimFunction, grad: Gradient) {
-        starts.forEach {
+    private fun compare(funcName: String, func: TwoDimFunction, grad: Gradient) {
+        println("for func: $funcName")
+        starts.forEach { start ->
+            println("start: ${start.joinToString(", ")}")
+            val simpleGradRes = withTimeMeasure { runGradientWith(func, grad, start) }
             printStats(
-                it,
-                runGradientWith(func, grad, it),
-                runNewtonWith(func, it)
+                "Simple gradient:",
+                simpleGradRes.first,
+                simpleGradRes.second
+            )
+            val reevesGradRes = withTimeMeasure { runFletcherReevesGradientWith(func, grad, start) }
+            printStats(
+                "Fletcher-Reeves gradient:",
+                reevesGradRes.first,
+                reevesGradRes.second
+            )
+            val newtonRes = withTimeMeasure { runNewtonWith(func, start) }
+            printStats(
+                "newton:",
+                newtonRes.first,
+                newtonRes.second
+            )
+            PlotUtils.buildContourPlot(
+                "results/deep-compare/",
+                func,
+                "func=${funcName}, start=${start.joinToString(", ")}",
+                labels = listOf("fletcher", "simple", "newton"),
+                results = listOf(reevesGradRes.first, simpleGradRes.first, newtonRes.first),
+                levelsCount = 7,
+                xMin = -10.0, xMax = 10.0, yMin = -10.0, yMax = 10.0
             )
         }
+        println("----------------------------------")
+    }
+
+    private fun <R> withTimeMeasure(block: () -> R): Pair<R, Long> {
+        val time = System.currentTimeMillis()
+        val blockRes = block.invoke()
+        return Pair(blockRes, System.currentTimeMillis() - time)
     }
 
     private fun printStats(
-        start: List<Rational>,
-        gradRes: List<MinimizationResult>,
-        newtonRes: List<MinimizationResult>
+        title: String,
+        res: List<MinimizationResult>,
+        workTime: Long
     ) {
-        println("start: ${start.joinToString(", ")}")
-        println("gradient: iterations: ${gradRes.size}, minimum: ${gradRes.last().argument}")
-        //println("newton: iterations: ${newtonRes.size}, minimum: ${newtonRes.last().argument}")
+        println(title)
+        println("iterations: ${res.size}, answer: ${res.last().argument}, work-time: ${workTime}ms")
     }
 
     private fun runNewtonWith(func: NDimFunction, start: List<Rational>): List<MinimizationResult> {
         // TODO
-        return emptyList()
+        return listOf(MinimizationResult(listOf(0.0, 0.0), 0.0, 0, 0))
     }
 
-    private fun runGradientWith(
+    private fun runFletcherReevesGradientWith(
         func: NDimFunction,
         grad: Gradient,
         start: List<Rational>
@@ -117,6 +143,27 @@ object NewtonAndGradComparison : MethodComparison {
                 stepFinder = DichotomyMethod(),
                 onStep = { minimizationResult -> results.add(minimizationResult) },
                 10
+            )
+        } catch (ignored: Exception) {
+        }
+
+        return results
+    }
+
+    private fun runGradientWith(
+        func: NDimFunction,
+        grad: Gradient,
+        start: List<Rational>
+    ): List<MinimizationResult> {
+        val results = ArrayList<MinimizationResult>()
+        try {
+            GradientMethod(maxIterations = 3000).findMinimum(
+                n = 2,
+                start = start,
+                function = func,
+                gradient = grad,
+                stepFinder = DichotomyMethod(),
+                onStep = { minimizationResult -> results.add(minimizationResult) }
             )
         } catch (ignored: Exception) {
         }
