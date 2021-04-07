@@ -6,7 +6,7 @@ import ru.itmo.optmethods.functions.TwoDimFunction
 import ru.itmo.optmethods.methods.MinimizationResult
 import java.lang.Double.max
 import java.lang.Double.min
-import java.math.RoundingMode
+import kotlin.math.roundToLong
 
 object PlotUtils {
     fun buildContourPlot(
@@ -43,21 +43,18 @@ object PlotUtils {
                 }
                 val levels =
                     NumpyUtils.linspace(
-                        func.invoke(trueMinX, trueMinY).toBigDecimal()
-                            .setScale(4, RoundingMode.HALF_EVEN).toDouble(),
-                        func.invoke(trueMaxX, trueMaxY).toBigDecimal()
-                            .setScale(4, RoundingMode.HALF_EVEN).toDouble(),
+                        func.invoke(trueMinX, trueMinY).roundValue(),
+                        func.invoke(trueMaxX, trueMaxY).roundValue(),
                         levelsCount
                     )
-                val additional = results[0].map { it.result }.takeLast(levelsCount)
-                    .map { it.toBigDecimal().setScale(4, RoundingMode.HALF_EVEN).toDouble() }
+                val additional = results[0].map { it.result }.takeLast(levelsCount).map {it.roundValue()}
                 levels((levels + additional).sorted().distinct())
                 add(xs, ys, zs)
             }
 
             results.forEachIndexed { i, res ->
                 points {
-                    when (i) {
+                    when(i) {
                         1 -> linestyle("-.")
                         2 -> linestyle("--")
                     }
@@ -73,5 +70,9 @@ object PlotUtils {
                 .inline(true)
                 .fontsize(10.0)
         }
+    }
+
+    private fun Rational.roundValue() : Rational {
+        return (this * 1000.0).roundToLong() / 1000.0
     }
 }
