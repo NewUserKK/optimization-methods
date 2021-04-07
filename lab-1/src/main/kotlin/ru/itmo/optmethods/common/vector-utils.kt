@@ -4,7 +4,7 @@ import java.io.File
 import java.io.FileWriter
 import kotlin.math.sqrt
 
-typealias Matrix = Array<DoubleArray>
+typealias Matrix = Array<RationalArray>
 
 operator fun List<Rational>.minus(another: List<Rational>): List<Rational> {
     require(this.size == another.size)

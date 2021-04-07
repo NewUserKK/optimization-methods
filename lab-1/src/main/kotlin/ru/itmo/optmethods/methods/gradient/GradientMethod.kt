@@ -6,6 +6,7 @@ import ru.itmo.optmethods.functions.InvocationsCountingFunction
 import ru.itmo.optmethods.functions.NDimFunction
 import ru.itmo.optmethods.functions.OneDimFunction
 import ru.itmo.optmethods.methods.DEFAULT_EPS
+import ru.itmo.optmethods.methods.DEFAULT_MAX_ITERATIONS
 import ru.itmo.optmethods.methods.MinimizationMethod
 import ru.itmo.optmethods.methods.MinimizationResult
 
@@ -16,7 +17,7 @@ import kotlin.math.sqrt
 
 class GradientMethod(
     private val epsilon: Rational = DEFAULT_EPS,
-    private val maxIterations: Int = Int.MAX_VALUE,
+    private val maxIterations: Int = DEFAULT_MAX_ITERATIONS,
     private val maxGradientLength: Rational = Double.MAX_VALUE
 ) {
     fun findMinimum(

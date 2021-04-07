@@ -2,6 +2,7 @@ package ru.itmo.optmethods.functions
 
 import org.apache.commons.math3.analysis.differentiation.DerivativeStructure
 import ru.itmo.optmethods.common.Rational
+import ru.itmo.optmethods.common.RationalArray
 
 
 fun interface NDimFunction {
@@ -45,4 +46,14 @@ fun interface DerivativeCountingFunction {
     operator fun invoke(args: List<DerivativeStructure>): DerivativeStructure
     operator fun invoke(vararg args: DerivativeStructure): DerivativeStructure =
         invoke(args.toList())
+
+    operator fun invoke(order: Int, args: List<Rational>): DerivativeStructure =
+        invoke(order, args.toDoubleArray())
+
+    operator fun invoke(order: Int, args: RationalArray): DerivativeStructure =
+        invoke(
+            args.mapIndexed { i, value ->
+                DerivativeStructure(args.size, order, i, value)
+            }
+        )
 }

@@ -1,52 +1,73 @@
 package ru.itmo.optmethods.methods.newton
 
 import org.apache.commons.math3.analysis.differentiation.DerivativeStructure
-import org.apache.commons.math3.linear.MatrixUtils
-import ru.itmo.optmethods.common.avg
-import ru.itmo.optmethods.common.plus
+import org.apache.commons.math3.linear.EigenDecomposition
+import org.apache.commons.math3.linear.MatrixUtils.createRealIdentityMatrix
+import org.apache.commons.math3.linear.RealMatrix
+import org.apache.commons.math3.linear.SingularValueDecomposition
+import ru.itmo.optmethods.common.*
 import ru.itmo.optmethods.functions.DerivativeCountingFunction
+import ru.itmo.optmethods.methods.DEFAULT_EPS
+import ru.itmo.optmethods.methods.DEFAULT_MAX_ITERATIONS
 import ru.itmo.optmethods.methods.MinimizationResult
 
-fun main() {
-    val f: DerivativeCountingFunction = DerivativeCountingFunction { (x, y) ->
-        x.pow(2) + y.pow(2)
-    }
-
-    NewtonMethod().findMinimum(2, f)
-}
-
-class NewtonMethod {
+class NewtonMethod(
+    private val eps: Rational = DEFAULT_EPS,
+    private val maxIterations: Int = DEFAULT_MAX_ITERATIONS
+) {
     fun findMinimum(
-        argsCount: Int,
-        function: DerivativeCountingFunction
+        startPoint: List<Rational>,
+        function: DerivativeCountingFunction,
+        step: Rational = 1.0,
+        onStep: (MinimizationResult) -> Unit = {}
     ): MinimizationResult {
-        var x = generateSequence { 1.0 }
-            .take(argsCount)
-            .toList()
-            .toDoubleArray()
+        var x = startPoint.toDoubleArray().toColumnRealMatrix()
+        var iterations = 0
 
         do {
-            val gradient = calculateGradient(function, x)
-        } while (TODO())
+            val xVector = x.getColumn(0)
+            val result = function(order = 2, args = xVector)
+            val gradient = calculateGradient(result, xVector)
+            val hessian = calculateHessian(result, xVector)
+
+            val invertedHessian = SingularValueDecomposition(hessian).solver.inverse
+            x -= step * (invertedHessian * gradient)
+
+            onStep(MinimizationResult(
+                argument = xVector.toList(),
+                result = result.value,
+                iterations = iterations,
+                functionsCall = iterations
+            ))
+
+//            if (iterations % 100000 == 0) {
+//                println("i=${iterations}, x=${x.getColumn(0).toList()}")
+//            }
+
+            iterations++
+        } while (gradient.norm > eps && iterations < maxIterations)
+
+        val xVector = x.getColumn(0)
+
+        return MinimizationResult(
+            argument = xVector.toList(),
+            result = function(order = 2, args = xVector).value,
+            iterations = iterations,
+            functionsCall = iterations
+        )
     }
 
     private fun calculateGradient(
-        function: DerivativeCountingFunction,
-        argumentVector: DoubleArray
-    ): DoubleArray {
-        val argument = argumentVector.mapIndexed { i, value ->
-            DerivativeStructure(argumentVector.size, 2, i, value)
-        }
-
-        val result = function(argument)
-
-        val identityMatrix = MatrixUtils.createRealIdentityMatrix(argument.size)
+        functionResult: DerivativeStructure,
+        argumentVector: RationalArray
+    ): RealMatrix {
+        val identityMatrix = createRealIdentityMatrix(argumentVector.size)
         val identityVectors = argumentVector.indices
             .map { i -> identityMatrix.getRow(i).map { it.toInt() }.toIntArray() }
 
-        return DoubleArray(argumentVector.size) { i ->
-            result.getPartialDerivative(*identityVectors[i])
-        }
+        return RationalArray(argumentVector.size) { i ->
+            functionResult.getPartialDerivative(*identityVectors[i])
+        }.toColumnRealMatrix()
     }
 
     /**
@@ -63,28 +84,22 @@ class NewtonMethod {
      * [[ (1, 0 ... 0, 1) (0, 1, 0 ... 0, 1) (0, 0, 1, 0 ... 0, 1) ... (...0, 2) ]]
      */
     private fun calculateHessian(
-        function: DerivativeCountingFunction,
-        argumentVector: DoubleArray
-    ): Array<DoubleArray> {
-        val argument = argumentVector.mapIndexed { i, value ->
-            DerivativeStructure(argumentVector.size, 2, i, value)
-        }
-
-        val result = function(argument)
-
-        val identityMatrix = MatrixUtils.createRealIdentityMatrix(argument.size)
+        functionResult: DerivativeStructure,
+        argumentVector: RationalArray
+    ): RealMatrix {
+        val identityMatrix = createRealIdentityMatrix(argumentVector.size)
         val identityVectors = argumentVector.indices
             .map { i -> identityMatrix.getRow(i).map { it.toInt() }.toIntArray() }
 
         return Array(argumentVector.size) { i ->
             val identityVector = identityVectors[i]
-            val partialDerivativeVectors = argumentVector.indices.map { k->
+            val partialDerivativeVectors = argumentVector.indices.map { k ->
                 identityVector.copyOf().also { it[k] += 1 }
             }
 
-            DoubleArray(argumentVector.size) { j ->
-                result.getPartialDerivative(*partialDerivativeVectors[j])
+            RationalArray(argumentVector.size) { j ->
+                functionResult.getPartialDerivative(*partialDerivativeVectors[j])
             }
-        }
+        }.toRealMatrix()
     }
 }
