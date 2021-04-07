@@ -8,8 +8,6 @@ import java.lang.Double.max
 import java.lang.Double.min
 import java.math.RoundingMode
 
-import kotlin.collections.plus
-
 object PlotUtils {
     fun buildContourPlot(
         path: String,
@@ -32,7 +30,7 @@ object PlotUtils {
         val trueMinY = yMin ?: max(lastY - 10.0, minY)
         val trueMaxY = yMax ?: min(lastY + 10.0, maxY)
 
-        plot(saveFigPath = "$path/$title.png") {
+        plot(saveFigPath = "$path/${title.replace(" ", "_")}.png") {
             title(title)
 
             val contourBuilder = contour().apply {
@@ -45,18 +43,21 @@ object PlotUtils {
                 }
                 val levels =
                     NumpyUtils.linspace(
-                        func.invoke(trueMinX, trueMinY).toBigDecimal().setScale(4, RoundingMode.HALF_EVEN).toDouble(),
-                        func.invoke(trueMaxX, trueMaxY).toBigDecimal().setScale(4, RoundingMode.HALF_EVEN).toDouble(),
+                        func.invoke(trueMinX, trueMinY).toBigDecimal()
+                            .setScale(4, RoundingMode.HALF_EVEN).toDouble(),
+                        func.invoke(trueMaxX, trueMaxY).toBigDecimal()
+                            .setScale(4, RoundingMode.HALF_EVEN).toDouble(),
                         levelsCount
                     )
-                val additional = results[0].map { it.result }.takeLast(levelsCount).map {it.toBigDecimal().setScale(4, RoundingMode.HALF_EVEN).toDouble()}
+                val additional = results[0].map { it.result }.takeLast(levelsCount)
+                    .map { it.toBigDecimal().setScale(4, RoundingMode.HALF_EVEN).toDouble() }
                 levels((levels + additional).sorted().distinct())
                 add(xs, ys, zs)
             }
 
             results.forEachIndexed { i, res ->
                 points {
-                    when(i) {
+                    when (i) {
                         1 -> linestyle("-.")
                         2 -> linestyle("--")
                     }

@@ -55,11 +55,11 @@ object AllMethodsComparison : MethodComparison {
         )
     }
     val func3Newton = DerivativeCountingFunction { (x, y) ->
-        2.0 * E.pow(-((x - 1.0) / 2.0).pow(2.0) - ((y - 1.0) / 1.0).pow(2)) + 3.0 * E.pow(
+        -(2.0 * E.pow(-((x - 1.0) / 2.0).pow(2.0) - ((y - 1.0) / 1.0).pow(2)) + 3.0 * E.pow(
             -((x - 2.0) / 3.0).pow(
                 2
             ) - ((y - 3.0) / 2.0).pow(2)
-        )
+        ))
     }
 
     // Ищем максимум для этой ф-ции
@@ -109,10 +109,9 @@ object AllMethodsComparison : MethodComparison {
                 reevesGradRes.timeMs
             )
 
-//            val newtonRes = withTimeMeasure { listOf(MinimizationResult(listOf(0.0,0.0), 0.0, 0, 0)) }
             val newtonRes = withTimeMeasure { runNewtonWith(newtonFunc, start) }
             printStats(
-                "newton:",
+                "Newton method:",
                 newtonRes.result,
                 newtonRes.timeMs
             )
