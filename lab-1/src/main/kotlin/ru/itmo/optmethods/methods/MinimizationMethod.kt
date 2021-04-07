@@ -11,7 +11,7 @@ data class MinimizationResult(
 )
 
 const val DEFAULT_EPS: Rational = 1e-8
-const val DEFAULT_MAX_ITERATIONS = 100
+const val DEFAULT_MAX_ITERATIONS = 10000
 
 val MinimizationMethod.name: String
     get() = this::class.simpleName!!

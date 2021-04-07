@@ -1,15 +1,22 @@
 package ru.itmo.optmethods.methods.newton
 
 import org.apache.commons.math3.analysis.differentiation.DerivativeStructure
+import org.apache.commons.math3.linear.EigenDecomposition
 import org.apache.commons.math3.linear.MatrixUtils.createRealIdentityMatrix
 import org.apache.commons.math3.linear.RealMatrix
 import org.apache.commons.math3.linear.SingularValueDecomposition
 import ru.itmo.optmethods.common.*
 import ru.itmo.optmethods.functions.DerivativeCountingFunction
 import ru.itmo.optmethods.methods.DEFAULT_EPS
+import ru.itmo.optmethods.methods.DEFAULT_MAX_ITERATIONS
 import ru.itmo.optmethods.methods.MinimizationResult
+import java.math.BigDecimal
+import java.math.RoundingMode
 
-class NewtonMethod(private val eps: Rational = DEFAULT_EPS) {
+class NewtonMethod(
+    private val eps: Rational = DEFAULT_EPS,
+    private val maxIterations: Int = DEFAULT_MAX_ITERATIONS
+) {
     fun findMinimum(
         startPoint: List<Rational>,
         function: DerivativeCountingFunction,
@@ -22,8 +29,14 @@ class NewtonMethod(private val eps: Rational = DEFAULT_EPS) {
         do {
             val xVector = x.getColumn(0)
             val result = function(order = 2, args = xVector)
+
+            if (result.allDerivatives.any { it.isInfinite() || it.isNaN() }) {
+                break
+            }
+
             val gradient = calculateGradient(result, xVector)
             val hessian = calculateHessian(result, xVector)
+
             val invertedHessian = SingularValueDecomposition(hessian).solver.inverse
             x -= step * (invertedHessian * gradient)
 
@@ -34,12 +47,12 @@ class NewtonMethod(private val eps: Rational = DEFAULT_EPS) {
                 functionsCall = iterations
             ))
 
-            if (iterations % 100000 == 0) {
-                println("i=${iterations}, x=${x.getColumn(0).toList()}")
-            }
+//            if (iterations % 100000 == 0) {
+//                println("i=${iterations}, x=${x.getColumn(0).toList()}")
+//            }
 
             iterations++
-        } while (x.norm < eps)
+        } while (gradient.norm > eps && iterations < maxIterations)
 
         val xVector = x.getColumn(0)
 
@@ -48,7 +61,7 @@ class NewtonMethod(private val eps: Rational = DEFAULT_EPS) {
             result = function(order = 2, args = xVector).value,
             iterations = iterations,
             functionsCall = iterations
-        )
+        ).also { onStep(it) }
     }
 
     private fun calculateGradient(
