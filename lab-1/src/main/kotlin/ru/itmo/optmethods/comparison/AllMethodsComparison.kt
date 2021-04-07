@@ -122,7 +122,9 @@ object AllMethodsComparison : MethodComparison {
                 "func=${funcName}, start=${start.joinToString(", ")}",
                 labels = listOf("fletcher", "simple", "newton"),
                 results = listOf(reevesGradRes.result, simpleGradRes.result, newtonRes.result),
-                levelsCount = 7
+                levelsCount = 10
+//                xMin = -abs(start[0]) - 1.0, xMax = abs(start[0]) + 1.0,
+//                yMin = -abs(start[1]) - 1.0, yMax = abs(start[1]) + 1.0,
             )
         }
         println("----------------------------------")

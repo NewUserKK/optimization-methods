@@ -25,30 +25,32 @@ object PlotUtils {
         val maxY = results.maxOf { it.maxOf { it.argument[1] } }
         val lastX = results[0].last().argument[0]
         val lastY = results[0].last().argument[1]
-        val trueMinX = xMin ?: max(lastX - 10.0, minX)
-        val trueMaxX = xMax ?: min(lastX + 10.0, maxX)
-        val trueMinY = yMin ?: max(lastY - 10.0, minY)
-        val trueMaxY = yMax ?: min(lastY + 10.0, maxY)
+        val trueMinX = xMin ?: minX
+        val trueMaxX = xMax ?: maxX
+        val trueMinY = yMin ?: minY
+        val trueMaxY = yMax ?: maxY
 
         plot(saveFigPath = "$path/${title.replace(" ", "_")}.png") {
             title(title)
 
             val contourBuilder = contour().apply {
                 val steps = 50
+                xlim(trueMinX, trueMaxX)
+                ylim(trueMinY, trueMaxY)
                 val xs = NumpyUtils.linspace(trueMinX, trueMaxX, steps)
                 val ys = NumpyUtils.linspace(trueMinY, trueMaxY, steps)
                 val grid = NumpyUtils.meshgrid(xs, ys)
                 val zs = grid.calcZ { xi: Double, yj: Double ->
                     func.invoke(xi, yj)
                 }
-                val levels =
-                    NumpyUtils.linspace(
-                        func.invoke(trueMinX, trueMinY).roundValue(),
-                        func.invoke(trueMaxX, trueMaxY).roundValue(),
-                        levelsCount
-                    )
-                val additional = results[0].map { it.result }.takeLast(levelsCount).map {it.roundValue()}
-                levels((levels + additional).sorted().distinct())
+//                val levels =
+//                    NumpyUtils.linspace(
+//                        func.invoke(trueMinX, trueMinY).roundValue(),
+//                        func.invoke(trueMaxX, trueMaxY).roundValue(),
+//                        levelsCount
+//                    )
+//                val additional = results.last().map { it.result }.takeLast(levelsCount).map {it.roundValue()}
+//                levels(additional.sorted().distinct())
                 add(xs, ys, zs)
             }
 
@@ -59,9 +61,11 @@ object PlotUtils {
                         2 -> linestyle("--")
                     }
                     label(labels[i])
+                    xlim(trueMinX, trueMaxX)
+                    ylim(trueMinY, trueMaxY)
                     add(
-                        res.map { it.argument[0].coerceIn(trueMinX, trueMaxX) },
-                        res.map { it.argument[1].coerceIn(trueMinY, trueMaxY) }
+                        res.map { it.argument[0]},
+                        res.map { it.argument[1]}
                     )
                 }
             }
@@ -70,9 +74,5 @@ object PlotUtils {
                 .inline(true)
                 .fontsize(10.0)
         }
-    }
-
-    private fun Rational.roundValue() : Rational {
-        return (this * 1000.0).roundToLong() / 1000.0
     }
 }
