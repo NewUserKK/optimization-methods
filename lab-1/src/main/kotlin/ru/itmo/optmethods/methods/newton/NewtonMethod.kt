@@ -1,17 +1,14 @@
 package ru.itmo.optmethods.methods.newton
 
 import org.apache.commons.math3.analysis.differentiation.DerivativeStructure
-import org.apache.commons.math3.linear.EigenDecomposition
+import org.apache.commons.math3.exception.MaxCountExceededException
+import org.apache.commons.math3.linear.*
 import org.apache.commons.math3.linear.MatrixUtils.createRealIdentityMatrix
-import org.apache.commons.math3.linear.RealMatrix
-import org.apache.commons.math3.linear.SingularValueDecomposition
 import ru.itmo.optmethods.common.*
 import ru.itmo.optmethods.functions.DerivativeCountingFunction
 import ru.itmo.optmethods.methods.DEFAULT_EPS
 import ru.itmo.optmethods.methods.DEFAULT_MAX_ITERATIONS
 import ru.itmo.optmethods.methods.MinimizationResult
-import java.math.BigDecimal
-import java.math.RoundingMode
 
 class NewtonMethod(
     private val eps: Rational = DEFAULT_EPS,
@@ -20,7 +17,7 @@ class NewtonMethod(
     fun findMinimum(
         startPoint: List<Rational>,
         function: DerivativeCountingFunction,
-        step: Rational = 1.0,
+        step: Rational = 0.5,
         onStep: (MinimizationResult) -> Unit = {}
     ): MinimizationResult {
         var x = startPoint.toDoubleArray().toColumnRealMatrix()
@@ -35,17 +32,23 @@ class NewtonMethod(
             }
 
             val gradient = calculateGradient(result, xVector)
-            val hessian = calculateHessian(result, xVector)
+            val hessian = makePositiveDefinite(calculateHessian(result, xVector))
 
-            val invertedHessian = SingularValueDecomposition(hessian).solver.inverse
+            val invertedHessian = try {
+                LUDecomposition(hessian).solver.inverse
+            } catch (e: SingularMatrixException) {
+                SingularValueDecomposition(hessian).solver.inverse
+            }
             x -= step * (invertedHessian * gradient)
 
-            onStep(MinimizationResult(
-                argument = xVector.toList(),
-                result = result.value,
-                iterations = iterations,
-                functionsCall = iterations
-            ))
+            onStep(
+                MinimizationResult(
+                    argument = xVector.toList(),
+                    result = result.value,
+                    iterations = iterations,
+                    functionsCall = iterations
+                )
+            )
 
 //            if (iterations % 100000 == 0) {
 //                println("i=${iterations}, x=${x.getColumn(0).toList()}")
@@ -62,6 +65,29 @@ class NewtonMethod(
             iterations = iterations,
             functionsCall = iterations
         ).also { onStep(it) }
+    }
+
+    private fun makePositiveDefinite(hessian: RealMatrix): RealMatrix {
+        fun isPositiveDefinite(hessian: RealMatrix): Boolean =
+            hessian.norm >= 0
+
+        if (isPositiveDefinite(hessian)) {
+            return hessian
+        }
+
+        var hessianCopy = hessian.copy()
+        var lambda = 1e-3
+        do {
+            val identity = createRealIdentityMatrix(hessian.rowDimension) * lambda
+            hessianCopy *= identity
+            lambda *= 2
+            if (lambda > 200) {
+                val ВЛАДИМИР = Unit
+                ВЛАДИМИР
+            }
+        } while (!isPositiveDefinite(hessianCopy))
+
+        return hessianCopy
     }
 
     private fun calculateGradient(
