@@ -1,6 +1,7 @@
 package ru.itmo.optmethods.methods.newton
 
 import org.apache.commons.math3.analysis.differentiation.DerivativeStructure
+import org.apache.commons.math3.linear.EigenDecomposition
 import org.apache.commons.math3.linear.MatrixUtils.createRealIdentityMatrix
 import org.apache.commons.math3.linear.RealMatrix
 import org.apache.commons.math3.linear.SingularValueDecomposition
@@ -24,6 +25,7 @@ class NewtonMethod(private val eps: Rational = DEFAULT_EPS) {
             val result = function(order = 2, args = xVector)
             val gradient = calculateGradient(result, xVector)
             val hessian = calculateHessian(result, xVector)
+
             val invertedHessian = SingularValueDecomposition(hessian).solver.inverse
             x -= step * (invertedHessian * gradient)
 
@@ -39,7 +41,7 @@ class NewtonMethod(private val eps: Rational = DEFAULT_EPS) {
             }
 
             iterations++
-        } while (x.norm < eps)
+        } while (gradient.norm > eps)
 
         val xVector = x.getColumn(0)
 
