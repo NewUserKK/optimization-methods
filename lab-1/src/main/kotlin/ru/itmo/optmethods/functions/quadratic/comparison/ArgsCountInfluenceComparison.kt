@@ -19,15 +19,16 @@ object ArgsCountInfluenceComparison : MethodComparison {
         maxGradientLength = 1000.0
     )
 
-    private val funPerArgsCount = 100
-    private val maxArgsCount = 20
-    private val conditionNumber = 1.1
+    private val funPerArgsCount = 1000
+    private val maxArgsCount = 15
 
     override fun compare() {
-        compareWithIterationCount()
+        compareWithIterationCount(1.0)
+        compareWithIterationCount(1.5)
+        compareWithIterationCount(2.0)
     }
 
-    private fun compareWithIterationCount() {
+    private fun compareWithIterationCount(conditionNumber: Rational) {
         val points = mutableListOf<Pair<Int, Rational>>()
 
         repeat(maxArgsCount - 1) {
@@ -55,7 +56,7 @@ object ArgsCountInfluenceComparison : MethodComparison {
             points += n to avgIters
         }
 
-        plot(saveFigPath = "results/gradient/args-count/influence-to-iterations.png") {
+        plot(saveFigPath = "results/gradient/args-count/influence-to-iterations-${conditionNumber}.png") {
             title("Influence to iterations")
             xlabel("Args count")
             ylabel("Avg iterations")

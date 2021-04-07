@@ -20,19 +20,15 @@ object ConditionNumberInfluenceComparison : MethodComparison {
         maxGradientLength = 1000.0
     )
 
-    private val funPerConditionNumber = 100
+    private val funPerConditionNumber = 1000
     private val maxConditionNumber = 4
     private val conditionNumberStepsCount = 100
 
     override fun compare() {
-        compareWithIterationCount()
-        compareWithFailRatio()
-    }
-
-    private fun compareWithIterationCount() {
         val n = 2
         val start = Array(n) { -10.0 }.toList()
-        val points = mutableListOf<Pair<Rational, Rational>>()
+        val pointsIters = mutableListOf<Pair<Rational, Rational>>()
+        val pointsFails = mutableListOf<Pair<Rational, Rational>>()
 
         repeat(conditionNumberStepsCount) { step ->
             val k = 1.0 + (maxConditionNumber - 1.0) * step / conditionNumberStepsCount.toDouble()
@@ -55,7 +51,10 @@ object ConditionNumberInfluenceComparison : MethodComparison {
             }
 
             val avgIters = sumIterations.toDouble() / funPerConditionNumber
-            points += k to avgIters
+            pointsIters += k to avgIters
+
+            val failedPercentage = failsCount.toDouble() / (funPerConditionNumber + failsCount)
+            pointsFails += k to failedPercentage
         }
 
         plot(saveFigPath = "results/gradient/condition-number/influence-to-iterations.png") {
@@ -65,41 +64,11 @@ object ConditionNumberInfluenceComparison : MethodComparison {
 
             points {
                 add(
-                    points.map { it.first },
-                    points.map { it.second },
+                    pointsIters.map { it.first },
+                    pointsIters.map { it.second },
                     "o"
                 )
             }
-        }
-    }
-
-    private fun compareWithFailRatio() {
-        val n = 2
-        val start = Array(n) { -10.0 }.toList()
-        val points = mutableListOf<Pair<Rational, Rational>>()
-
-        repeat(conditionNumberStepsCount) { step ->
-            val k = 1.0 + (maxConditionNumber - 1.0) * step / conditionNumberStepsCount.toDouble()
-
-            var checkedFunctions = 0
-            var sumIterations = 0
-            var failsCount = 0
-
-            while (checkedFunctions < funPerConditionNumber) {
-                val qf = rnd.genQuadraticFunction(n, k, 10.0)
-                val gradient = qf.getGradient()
-
-                try {
-                    val result = gm.findMinimum(n, start, qf, gradient, GoldenRatioMethod())
-                    checkedFunctions++
-                    sumIterations += result.iterations
-                } catch (e: GradientMethodException) {
-                    failsCount++
-                }
-            }
-
-            val failedPercentage = failsCount.toDouble() / (funPerConditionNumber + failsCount)
-            points += k to failedPercentage
         }
 
         plot(saveFigPath = "results/gradient/condition-number/influence-to-fail-ratio.png") {
@@ -109,8 +78,8 @@ object ConditionNumberInfluenceComparison : MethodComparison {
 
             points {
                 add(
-                    points.map { it.first },
-                    points.map { it.second },
+                    pointsFails.map { it.first },
+                    pointsFails.map { it.second },
                     "o"
                 )
             }
