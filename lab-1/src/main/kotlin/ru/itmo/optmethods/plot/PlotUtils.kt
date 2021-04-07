@@ -6,6 +6,7 @@ import ru.itmo.optmethods.functions.TwoDimFunction
 import ru.itmo.optmethods.methods.MinimizationResult
 import java.lang.Double.max
 import java.lang.Double.min
+import java.math.RoundingMode
 
 import kotlin.collections.plus
 
@@ -16,9 +17,9 @@ object PlotUtils {
         title: String,
         labels: List<String>,
         results: List<List<MinimizationResult>>,
-        levelsCount: Int,
-        xMin: Rational, xMax: Rational,
-        yMin: Rational, yMax: Rational
+        levelsCount: Int = 7,
+        xMin: Rational? = null, xMax: Rational? = null,
+        yMin: Rational? = null, yMax: Rational? = null
     ) {
         val minX = results.minOf { it.minOf { it.argument[0] } }
         val maxX = results.maxOf { it.maxOf { it.argument[0] } }
@@ -26,10 +27,10 @@ object PlotUtils {
         val maxY = results.maxOf { it.maxOf { it.argument[1] } }
         val lastX = results[0].last().argument[0]
         val lastY = results[0].last().argument[1]
-        val trueMinX = max(lastX - 10.0, minX)
-        val trueMaxX = min(lastX + 10.0, maxX)
-        val trueMinY = max(lastY - 10.0, minY)
-        val trueMaxY = min(lastY + 10.0, maxY)
+        val trueMinX = xMin ?: max(lastX - 10.0, minX)
+        val trueMaxX = xMax ?: min(lastX + 10.0, maxX)
+        val trueMinY = yMin ?: max(lastY - 10.0, minY)
+        val trueMaxY = yMax ?: min(lastY + 10.0, maxY)
 
         plot(saveFigPath = "$path/$title.png") {
             title(title)
@@ -44,11 +45,11 @@ object PlotUtils {
                 }
                 val levels =
                     NumpyUtils.linspace(
-                        func.invoke(trueMinX, trueMinY),
-                        func.invoke(trueMaxX, trueMaxY),
-                        5
+                        func.invoke(trueMinX, trueMinY).toBigDecimal().setScale(4, RoundingMode.HALF_EVEN).toDouble(),
+                        func.invoke(trueMaxX, trueMaxY).toBigDecimal().setScale(4, RoundingMode.HALF_EVEN).toDouble(),
+                        levelsCount
                     )
-                val additional = results[0].map { it.result }.takeLast(40)
+                val additional = results[0].map { it.result }.takeLast(levelsCount).map {it.toBigDecimal().setScale(4, RoundingMode.HALF_EVEN).toDouble()}
                 levels((levels + additional).sorted().distinct())
                 add(xs, ys, zs)
             }
