@@ -58,7 +58,7 @@ class GradientMethod(
             val newValue = function(newW)
             if (!newValue.isFinite()) throw GradientMethodException("New function value is not finite")
 
-            if (abs(newValue - function(w)) < epsilon) {
+            if (sqrt(gradient.invoke(newW).map { it * it }.sum()) < epsilon) {
                 return MinimizationResult(
                     argument = newW,
                     result = mFunction.invoke(newW),
