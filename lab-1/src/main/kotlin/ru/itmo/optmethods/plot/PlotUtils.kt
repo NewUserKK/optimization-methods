@@ -22,7 +22,7 @@ object PlotUtils {
             title(title)
 
             val contourBuilder = contour().apply {
-                val steps = 100
+                val steps = 50
                 val xs = NumpyUtils.linspace(results[0].minOf { it.argument[0] }, results[0].maxOf { it.argument[0] }, steps)
                 val ys = NumpyUtils.linspace(results[0].minOf { it.argument[1] }, results[0].maxOf { it.argument[1] }, steps)
                 val grid = NumpyUtils.meshgrid(xs, ys)
