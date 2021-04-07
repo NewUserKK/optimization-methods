@@ -32,7 +32,7 @@ object PlotUtils {
         val trueMinY = yMin ?: max(lastY - 10.0, minY)
         val trueMaxY = yMax ?: min(lastY + 10.0, maxY)
 
-        plot(saveFigPath = "$path/$title.png") {
+        plot(saveFigPath = "$path/${title.replace(" ", "_")}.png") {
             title(title)
 
             val contourBuilder = contour().apply {
