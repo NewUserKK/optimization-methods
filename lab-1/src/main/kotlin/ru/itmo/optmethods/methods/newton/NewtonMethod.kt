@@ -47,9 +47,9 @@ class NewtonMethod(
                 functionsCall = iterations
             ))
 
-            if (iterations % 100000 == 0) {
-                println("i=${iterations}, x=${x.getColumn(0).toList()}")
-            }
+//            if (iterations % 100000 == 0) {
+//                println("i=${iterations}, x=${x.getColumn(0).toList()}")
+//            }
 
             iterations++
         } while (gradient.norm > eps && iterations < maxIterations)
