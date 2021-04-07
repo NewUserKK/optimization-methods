@@ -8,9 +8,13 @@ import org.apache.commons.math3.linear.SingularValueDecomposition
 import ru.itmo.optmethods.common.*
 import ru.itmo.optmethods.functions.DerivativeCountingFunction
 import ru.itmo.optmethods.methods.DEFAULT_EPS
+import ru.itmo.optmethods.methods.DEFAULT_MAX_ITERATIONS
 import ru.itmo.optmethods.methods.MinimizationResult
 
-class NewtonMethod(private val eps: Rational = DEFAULT_EPS) {
+class NewtonMethod(
+    private val eps: Rational = DEFAULT_EPS,
+    private val maxIterations: Int = DEFAULT_MAX_ITERATIONS
+) {
     fun findMinimum(
         startPoint: List<Rational>,
         function: DerivativeCountingFunction,
@@ -36,12 +40,12 @@ class NewtonMethod(private val eps: Rational = DEFAULT_EPS) {
                 functionsCall = iterations
             ))
 
-            if (iterations % 100000 == 0) {
-                println("i=${iterations}, x=${x.getColumn(0).toList()}")
-            }
+//            if (iterations % 100000 == 0) {
+//                println("i=${iterations}, x=${x.getColumn(0).toList()}")
+//            }
 
             iterations++
-        } while (gradient.norm > eps)
+        } while (gradient.norm > eps && iterations > maxIterations)
 
         val xVector = x.getColumn(0)
 

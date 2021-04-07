@@ -2,6 +2,7 @@ package ru.itmo.optmethods.comparison
 
 import ru.itmo.optmethods.common.*
 import ru.itmo.optmethods.functions.*
+import ru.itmo.optmethods.methods.DEFAULT_MAX_ITERATIONS
 import ru.itmo.optmethods.methods.MinimizationResult
 import ru.itmo.optmethods.methods.gradient.GradientMethod
 import ru.itmo.optmethods.methods.newton.NewtonMethod
@@ -91,9 +92,9 @@ object AllMethodsComparison : MethodComparison {
         newtonFunc: DerivativeCountingFunction,
         grad: Gradient
     ) {
-        println("for func: $funcName")
+        println("\n========== $funcName ==========")
         starts.forEach { start ->
-            println("start: ${start.joinToString(", ")}")
+            println("\n\n----- Start: (${start.joinToString(", ")}) -----")
             val simpleGradRes = withTimeMeasure { runGradientWith(func, grad, start) }
             printStats(
                 "Simple gradient:",
@@ -141,7 +142,7 @@ object AllMethodsComparison : MethodComparison {
         workTime: Long
     ) {
         println(title)
-        println("iterations: ${res.size}, answer: ${res.last().argument}, work-time: ${workTime}ms")
+        println("iterations: ${res.size}, answer: ${res.last().argument}, work-time: ${workTime}ms\n")
     }
 
     private fun runNewtonWith(
@@ -166,7 +167,7 @@ object AllMethodsComparison : MethodComparison {
     ): List<MinimizationResult> {
         val results = ArrayList<MinimizationResult>()
         try {
-            GradientMethod(maxIterations = 3000).findMinimumFletcherReeves(
+            GradientMethod().findMinimumFletcherReeves(
                 n = 2,
                 start = start,
                 function = func,
@@ -188,7 +189,7 @@ object AllMethodsComparison : MethodComparison {
     ): List<MinimizationResult> {
         val results = ArrayList<MinimizationResult>()
         try {
-            GradientMethod(maxIterations = 3000).findMinimum(
+            GradientMethod().findMinimum(
                 n = 2,
                 start = start,
                 function = func,
