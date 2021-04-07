@@ -45,7 +45,7 @@ class NewtonMethod(
 //            }
 
             iterations++
-        } while (gradient.norm > eps && iterations > maxIterations)
+        } while (gradient.norm > eps && iterations < maxIterations)
 
         val xVector = x.getColumn(0)
 
