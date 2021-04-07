@@ -2,7 +2,6 @@ package ru.itmo.optmethods.comparison
 
 import ru.itmo.optmethods.common.*
 import ru.itmo.optmethods.functions.*
-import ru.itmo.optmethods.methods.DEFAULT_MAX_ITERATIONS
 import ru.itmo.optmethods.methods.MinimizationResult
 import ru.itmo.optmethods.methods.gradient.GradientMethod
 import ru.itmo.optmethods.methods.newton.NewtonMethod
@@ -55,11 +54,11 @@ object AllMethodsComparison : MethodComparison {
         )
     }
     val func3Newton = DerivativeCountingFunction { (x, y) ->
-        -(2.0 * E.pow(-((x - 1.0) / 2.0).pow(2.0) - ((y - 1.0) / 1.0).pow(2)) + 3.0 * E.pow(
+        2.0 * E.pow(-((x - 1.0) / 2.0).pow(2.0) - ((y - 1.0) / 1.0).pow(2)) + 3.0 * E.pow(
             -((x - 2.0) / 3.0).pow(
                 2
             ) - ((y - 3.0) / 2.0).pow(2)
-        ))
+        )
     }
 
     // Ищем максимум для этой ф-ции
@@ -83,14 +82,15 @@ object AllMethodsComparison : MethodComparison {
     override fun compare() {
         compare("100.0 * (y - x)^2 + (1 - x)^2", func1, func1Newton, grad1)
         compare("100.0 * (y - x^2)^2 + (1 - x)^2", func2, func2Newton, grad2)
-        compare("func3-long", func3, func3Newton, grad3)
+        compare("func3-long", func3, func3Newton, grad3, findMax = true)
     }
 
     private fun compare(
         funcName: String,
         func: TwoDimFunction,
         newtonFunc: DerivativeCountingFunction,
-        grad: Gradient
+        grad: Gradient,
+        findMax: Boolean = false
     ) {
         println("\n========== $funcName ==========")
         starts.forEach { start ->
@@ -109,7 +109,7 @@ object AllMethodsComparison : MethodComparison {
                 reevesGradRes.timeMs
             )
 
-            val newtonRes = withTimeMeasure { runNewtonWith(newtonFunc, start) }
+            val newtonRes = withTimeMeasure { runNewtonWith(newtonFunc, start, findMax) }
             printStats(
                 "Newton method:",
                 newtonRes.result,
@@ -145,14 +145,16 @@ object AllMethodsComparison : MethodComparison {
 
     private fun runNewtonWith(
         func: DerivativeCountingFunction,
-        start: List<Rational>
+        start: List<Rational>,
+        findMax: Boolean
     ): List<MinimizationResult> {
         val results = mutableListOf<MinimizationResult>()
 
-        NewtonMethod().findMinimum(
+        NewtonMethod().findExtremum(
             startPoint = start,
             function = func,
-            onStep = { result -> results += result }
+            onStep = { result -> results += result },
+            findMax = findMax
         )
 
         return results
