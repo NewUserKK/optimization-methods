@@ -3,6 +3,7 @@ package ru.itmo.optmethods.methods.common
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.shouldBe
+import ru.itmo.optmethods.common.Rational
 import ru.itmo.optmethods.methods.MinimizationResult
 import kotlin.math.abs
 
@@ -18,6 +19,24 @@ fun MinimizationResult.shouldBeAround(expected: MinimizationResult, eps: Double)
 infix fun MinimizationResult.shouldHaveSameCallCountAs(expected: MinimizationResult) {
     this shouldBe minimizationResultCallingMatcher(expected)
 }
+
+infix fun Rational.shouldBeAround(other: Rational) = this shouldBe epsMatcher(other, 1e-10)
+
+fun epsMatcher(
+    expected: Rational,
+    eps: Double
+): Matcher<Rational> =
+    object : Matcher<Rational> {
+        override fun test(value: Rational): MatcherResult {
+            val passed = abs(value - expected) < eps
+
+            return MatcherResult(
+                passed = passed,
+                failureMessage = "Expected $value to be equal $expected",
+                negatedFailureMessage = "Did not expect $value not to be equal $expected "
+            )
+        }
+    }
 
 fun minimizationResultMatcher(
     expected: MinimizationResult,
